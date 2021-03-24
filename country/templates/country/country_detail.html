@@ -1,0 +1,25 @@
+{% extends "country/_base.html" %}
+{% block title%} Pays {% endblock %}
+
+
+{% block content %}
+
+    <div class="container-sm l-3 d-flex flex-wrap border">
+    
+
+    <div class="card  m-2 p-1 rounded-lg p-2" style="width:300px">
+        <div class="card-title">
+        
+            {{ country.name }}      
+        </div>
+        <div class="card-body">
+            {{country.iso}} {{country.name}} {{country.hdi}} {{country.surface}} {{country.vaccination_start_date}}
+        </div>
+        
+        
+    </div>
+ 
+    </div>
+
+
+{% endblock content %}

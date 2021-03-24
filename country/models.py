@@ -4,7 +4,7 @@ from django.db import models
 class Country(models.Model):
 
     iso = models.CharField("ISO", max_length=3, primary_key=True)
-    name = models.CharField("nom", max_length=50)
+    name = models.CharField("nom", max_length=50, unique=True)
     hdi = models.FloatField("HDI")
     population = models.BigIntegerField()
     surface = models.BigIntegerField()
@@ -17,3 +17,8 @@ class Country(models.Model):
 
     #def get_absolute_url(self):
     #    return reverse("_detail", kwargs={"pk": self.pk})
+class Climat(models.Model):
+    description = models.TextField()
+
+    def __str__(self):
+        return self.description

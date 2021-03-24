@@ -1,0 +1,32 @@
+{% extends "country/_base.html" %}
+{% block title%} Liste des pays {% endblock %}
+
+
+{% block content %}
+ {% if countrys %}
+    <div class="container-sm l-3 d-flex flex-wrap border">
+    
+{% for country in countrys %}
+    <div class="card  m-2 p-1 rounded-lg p-2" style="width:300px">
+        <div class="card-title">
+            {{ country.name }}      
+        </div>
+        <div class="card-body">
+            {{country.iso}} {{country.name}}
+        </div>
+        
+        <div class="card-footer bg-primary">
+            <a href="{% url 'country:country-detail' country.iso %}" class="btn btn-outline-light">Détails</a>
+        </div>
+    </div>
+ 
+{% endfor%}
+
+
+
+</div>
+ {% else %}
+ Pas de pays
+ {% endif %}
+
+{% endblock content %}

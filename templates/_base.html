@@ -15,13 +15,13 @@
 
     
 
-<title>{% block title %}MProject{% endblock title %}</title>
+<title>{% block title %}COVID project{% endblock title %}</title>
 </head>
 <body>
 
 <div class="p-3 bg-primary text-white">
-<h1 class="display-1">MProject</h1>
-<h2>Un site web de gestion de tâches</h2>
+<h1 class="display-1">Covid</h1>
+<h2>Un site web de gestion de covis</h2>
 
 </div>
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark border-top borderwhite mb-3">
@@ -30,17 +30,10 @@
 <a class="nav-link" href="/"><i class="fa fa-home"></i></a>
 </li>
 
-<li id="nav-dev" class="nav-item {%if request.resolver_match.app_name == "developer"%} active {%endif%}">
-<a class="nav-link" href="{% url 'developer:developer-list' %}">Developers</a>
+<li id="nav-dev" class="nav-item {%if request.resolver_match.app_name == "country"%} active {%endif%}">
+<a class="nav-link" href="{% url 'country:country-list' %}">Country</a>
 </li>
-<li id="nav-task" class="nav-item {%if request.resolver_match.app_name == "task"%} active {%endif%}">
-<a class="nav-link" href="{% url 'task:task-list' %}">Tasks</a>
-</li>
-{% if perms.team.team_management%}
-<li id="nav-task" class="nav-item {%if request.resolver_match.app_name == "team"%} active {%endif%}">
-<a class="nav-link" href="{% url 'team:team-list' %}">Teams</a>
-</li>
-{%endif%}
+
 
 </ul>
 </nav>
@@ -57,6 +50,8 @@
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="{% static '/js/mdb.min.js'%}"></script>
 
+  <script type="text/javascript" src="{% static '/js/addons/datatables.min.js'%}"></script>
+
  <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
  
@@ -70,9 +65,11 @@
 {% endblock%}
 <script> 
     {% block menu-script %}
+    /**
         $("#nav-home").addClass('active')
         $("#nav-dev").removeClass('active')
         $("#nav-task").removeClass('active')
+        */
     {% endblock menu-script%}
 </script>
 </body>

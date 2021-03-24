@@ -12,6 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            "CREATE TABLE Country( iso char(3) primary key ,name varchar(50) not null,	hdi float not null,	population biginteger not null,	start_vaccination_date date not null);"
+            sql=[("""CREATE TABLE Country(
+                     iso char(3) primary key,
+                     name varchar(50) not null,
+                     hdi float not null,
+                     population bigint not null,
+                     start_vaccination_date date not null);""")],
+            reverse_sql=[("DROP TABLE Country")],
         )
     ]
