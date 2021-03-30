@@ -8,7 +8,7 @@ class Country(models.Model):
     hdi = models.FloatField("HDI")
     population = models.BigIntegerField()
     surface = models.BigIntegerField()
-    vaccination_start_date = models.DateField( auto_now=False, auto_now_add=False)
+    start_vaccination_date = models.DateField( auto_now=False, auto_now_add=False)
 
     
 
