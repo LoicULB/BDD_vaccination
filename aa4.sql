@@ -19,6 +19,7 @@ CREATE TABLE Pays (
 	hdi float,
 	Surface BIGINT,
 	Population BIGINT,
+	debut_vaccination DATE NOT NULL,
 	Region varchar(30) NOT NULL CONSTRAINT region_fk REFERENCES Region(nom),
 	climat SERIAL CONSTRAINT climat_fk REFERENCES Climat(id)
 );
