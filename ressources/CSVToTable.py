@@ -150,7 +150,7 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
     daily_stats_result_list = []
     hospitalisation_stats_result_list = []
     vaccinations_stats_result_list = []
-    
+    epidemiologists_list = []
     with open(hospitals_csv_path) as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=',')
         counter = 0
@@ -166,7 +166,7 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
             daily_stats_result["pays"] = row["iso_code"]
             daily_stats_result["date"] = row["date"]
             daily_stats_result["epidemiologist"] = row["source_epidemiologiste"]
-
+            epidemiologists_list.append(row["source_epidemiologiste"])
             hospitalisation_stats_result["id_stat"] = daily_stats_index
             hospitalisation_stats_result["icu_patients"] = row["icu_patients"]
             hospitalisation_stats_result["hosp_patients"] = row["hosp_patients"]
@@ -193,7 +193,7 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
     write_dict_into_file(daily_stats_result_list, "cleaned_daily_stats.csv", daily_stats_fields_name)
     write_dict_into_file(vaccinations_stats_result_list, "cleaned_vaccinations_stats.csv", vaccinations_stats_fields_name)
     write_dict_into_file(hospitalisation_stats_result_list, "cleaned_hospitalisation_stats.csv", hospitalisation_stats_fields_name)
-
+    write_dict_into_file(epidemiologists_list, 'cleaned_epidemiologists.csv', ['id'])
 def check_if_pays_date_already_used(vaccinations , daily_stats_result_list, vaccinations_result_list):
     is_founded = False
     vaccinations_stats_fields_name = ["id_stat",  "nb_tests", "nb_vaccinations"  ]
@@ -260,7 +260,7 @@ def convert_ugly_date_to_pretty_date(ugly_date_string):
     
     return dto.strftime("%m/%d/%Y")
 
-    
+
 create_countries_tables("country.csv")
 clean_producers_file("producers.csv")
 clean_hospitals_vaccinations_fileV2('vaccinations.csv', 'hospitals.csv')
