@@ -15,13 +15,15 @@ CREATE TABLE Climat (
 
 CREATE TABLE Pays (
 	ISO varchar(15) NOT NULL PRIMARY KEY,
+	Region varchar(30) NOT NULL CONSTRAINT region_fk REFERENCES Region(nom),
 	Nom varchar(30) UNIQUE,
 	hdi float,
 	Surface BIGINT,
 	Population BIGINT,
-	debut_vaccination DATE NOT NULL,
-	Region varchar(30) NOT NULL CONSTRAINT region_fk REFERENCES Region(nom),
-	climat SERIAL CONSTRAINT climat_fk REFERENCES Climat(id)
+	climat SERIAL CONSTRAINT climat_fk REFERENCES Climat(id),
+	debut_vaccination DATE 
+	
+	
 );
 
 CREATE TABLE Vaccins (

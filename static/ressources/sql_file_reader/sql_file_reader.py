@@ -13,4 +13,4 @@ def get_sql_from_file(filepath):
        
         return data 
 
-get_sql_from_file("aa2.sql")
+get_sql_from_file("create_tables.sql")
