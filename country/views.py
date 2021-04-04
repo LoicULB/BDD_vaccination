@@ -25,7 +25,6 @@ class CountryDetailView2(TemplateView):
         return context
 
 class ClimatListView(ListView):
-    print("Whar happen")
     model = Climat
     context_object_name= "climats"
     queryset = Climat.objects.raw("SELECT * FROM Climat;")

@@ -15,12 +15,12 @@ CREATE TABLE Climat (
 
 CREATE TABLE Pays (
 	ISO varchar(15) NOT NULL PRIMARY KEY,
-	Region varchar(30) NOT NULL CONSTRAINT region_fk REFERENCES Region(nom),
-	Nom varchar(30) UNIQUE,
+	Region varchar(50) NOT NULL CONSTRAINT region_fk REFERENCES Region(nom),
+	Nom varchar(50) UNIQUE,
 	hdi float,
 	Surface BIGINT,
 	Population BIGINT,
-	climat SERIAL CONSTRAINT climat_fk REFERENCES Climat(id),
+	climat INT CONSTRAINT climat_fk REFERENCES Climat(id),
 	debut_vaccination DATE 
 	
 	
@@ -31,35 +31,40 @@ CREATE TABLE Vaccins (
 );
 
 CREATE TABLE Campagne_Vaccin (
+	Iso_pays VARCHAR(15) NOT NULL CONSTRAINT isopays_fk REFERENCES Pays(ISO),
 	Nom_Vaccin varchar(40) NOT NULL CONSTRAINT nomvaccin_fk REFERENCES Vaccins(nom),
-	Iso_pays CHAR(3) NOT NULL CONSTRAINT isopays_fk REFERENCES Pays(ISO),
+	
 	CONSTRAINT vaccin_pk PRIMARY KEY (Nom_Vaccin, Iso_pays)
 );
+-- 
 
+
+--
 CREATE TABLE Utilisateur (
-	id INT NOT NULL PRIMARY KEY,
+	--id SERIAL NOT NULL PRIMARY KEY,
+	uuid uuid NOT NULL PRIMARY KEY,
 	Nom varchar(40),
 	Prenom varchar(40),
-	pseudo varchar(40) NOT NULL ,
-	mot_de_passe varchar(40) NOT NULL ,
-	Rue_Adresse varchar(100),
-	Code_Postal_Adresse INT,
-	Numero_Adresse INT,
-	Ville_Adresse varchar(40)
+	pseudo varchar(40)  , --should be not null
+	mot_de_passe varchar(40)  , --should be not null
+	rue_Adresse varchar(100),
+	code_postal_adresse INT,
+	numero_adresse INT,
+	ville_adresse varchar(40)
 );
 
 CREATE TABLE Epidemiologiste (
-	id int NOT NULL CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(id),
+	--id int NOT NULL CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
+	uuid uuid NOT NULL PRIMARY KEY CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
 	centre varchar(40),
-	telephone_service varchar(20),
-	CONSTRAINT idepidemiologiste_pk PRIMARY KEY (id)
+	telephone_service varchar(20)
 );
 
 CREATE TABLE Stats_Journalieres (
 	id INT NOT NULL PRIMARY KEY,
 	Iso_Pays varchar(15) NOT NULL CONSTRAINT isopays_fk REFERENCES Pays(ISO),
 	date DATE NOT NULL,
-	Id_Epi INT CONSTRAINT idepi_fk REFERENCES Epidemiologiste(id),
+	Id_Epi uuid CONSTRAINT idepi_fk REFERENCES Epidemiologiste(uuid),
 	CONSTRAINT datepays_unique UNIQUE (date, Iso_Pays)
 );
 
@@ -77,3 +82,14 @@ CREATE TABLE hospitalisations_stats (
 	CONSTRAINT icu_hosp CHECK (Icu_patiens <= hosp_patiens),
 	CONSTRAINT hospitalisations_pk PRIMARY KEY(id)
 );
+
+--Pull my devil trigger
+CREATE OR REPLACE FUNCTION auto_insert_user() RETURNS TRIGGER 
+LANGUAGE PLPGSQL AS $$
+BEGIN
+	INSERT INTO utilisateur(uuid) VALUES (NEW.uuid);
+	RETURN NEW;
+END; $$;
+
+CREATE TRIGGER auto_insert_user BEFORE INSERT ON epidemiologiste FOR EACH ROW 
+EXECUTE PROCEDURE auto_insert_user();

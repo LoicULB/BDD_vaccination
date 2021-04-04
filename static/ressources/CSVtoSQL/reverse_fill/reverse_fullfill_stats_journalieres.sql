@@ -1,0 +1,1 @@
+DELETE FROM stats_journalieres;

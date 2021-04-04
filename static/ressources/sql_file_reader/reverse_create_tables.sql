@@ -1,0 +1,12 @@
+DROP TRIGGER auto_insert_user ON epidemiologiste;
+DROP TABLE IF EXISTS hospitalisations_stats;
+DROP TABLE vaccinnations_stats;
+DROP TABLE stats_journalieres;
+DROP TABLE epidemiologiste;
+DROP TABLE utilisateur;
+DROP TABLE campagne_vaccin;
+DROP TABLE vaccins;
+DROP TABLE pays;
+DROP TABLE climat;
+DROP TABLE region;
+DROP TABLE continent;

@@ -12,7 +12,7 @@ def get_sql_from_file(filepath):
  
         #close file
         text_file.close()
-        print(data)
+        
         return data 
 class Migration(migrations.Migration):
 
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
     
     operations = [
         migrations.RunSQL(
-            sql=[(get_sql_from_file(os.path.join(settings.STATICFILES_DIRS[0], 'ressources/sql_file_reader/aa2.sql')))],
-            
+            sql=[(get_sql_from_file(os.path.join(settings.STATICFILES_DIRS[0], 'ressources/sql_file_reader/create_tables.sql')))],
+            reverse_sql=[(get_sql_from_file(os.path.join(settings.STATICFILES_DIRS[0], 'ressources/sql_file_reader/reverse_create_tables.sql')))]
         )
     ]

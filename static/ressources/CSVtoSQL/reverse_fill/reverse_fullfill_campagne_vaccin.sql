@@ -1,0 +1,1 @@
+DELETE FROM campagne_vaccin;

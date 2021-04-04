@@ -23,7 +23,7 @@ def write_insert_statement(table_name, df, file):
 def fullfill_cv():
     with open("fullfill_cv.sql", "w") as file:
         df = pandas.read_csv(os.path.join(directory, 'campaign_vaccines_cleaned.csv'), header =0, names = ['pays','vaccin'])
-        write_insert_statement("campagnevaccination", df, file)
+        write_insert_statement("campagne_vaccin", df, file)
 
 def fullfill_sj():
     with open("fullfill_sj.sql", "w") as file:
@@ -72,6 +72,10 @@ def fullfill_climate():
         df = pandas.read_csv(os.path.join(directory, 'climate.csv'), sep=';')
         write_insert_statement("climat", df, file)
 
+def fullfill_epidemiologist():
+    with open("fullfill_epidemiologist.sql", "w") as file:
+        df = pandas.read_csv(os.path.join(directory, 'cleaned_epidemiologists.csv'), sep=';')
+        write_insert_statement("epidemiologist(uuid)", df, file)
 directory = sys.argv[1]
 fullfill_cv()
 fullfill_sj()
@@ -82,3 +86,4 @@ fullfill_country()
 fullfill_region()
 fullfill_vacc()
 fullfill_climate()
+fullfill_epidemiologist()
