@@ -10,10 +10,13 @@ def write_insert_statement(table_name, df, file):
     for i in range(len(df)):
         file.write(f"INSERT INTO {table_name} VALUES(")
         for j in range(len(df.columns)):
-
+            
             value = str(df.iloc[i,j]) if str(df.iloc[i,j]).replace('.','',1).isdigit() else "$$" + str(df.iloc[i, j]) + "$$"
             if value=="$$nan$$" :
                 value="NULL"
+            # PUTAIN DE MEEERDE SA MERE LA PUTE A CHIENNE (les insultes c'est tout de même très féminin quand on y pense
+            elif table_name== "vaccinnations_stats":
+                value = str(int(df.iloc[i,j]))
             file.write(value)
             if j < len(df.columns) - 1:
                 file.write(",")
@@ -41,7 +44,7 @@ def fullfill_vs():
     with open("fullfill_vs.sql", "w") as file:
         df = pandas.read_csv(os.path.join(directory, 'cleaned_vaccinations_stats.csv'), header=0,
                          names=["id_stat","nb_tests","nb_vaccinations"])
-        write_insert_statement('vaccinations_stats', df, file)
+        write_insert_statement('vaccinnations_stats', df, file)
 
 def fullfill_cont():
     with open("fullfill_cont.sql", "w") as file:

@@ -14,6 +14,7 @@ def write_dict_into_file(result_list, file_path, fields_name):
         writer.writeheader()
 
         for result in result_list:
+            
             writer.writerow(result)
 def return_null_if_none(row, column):
 
@@ -21,7 +22,16 @@ def return_null_if_none(row, column):
         return "NULL"
     else :
         return row[column]
-
+def convert_float_to_int(float_arg):
+    if float_arg:
+        #print("Float : " +float_arg)
+        #float_arg = float_arg.replace(".0" , '\n',1)
+        float_arg = float(float_arg)
+        float_arg = int(float_arg)
+        return ""+str(float_arg)
+    else:
+        return "NULL"
+           
 def convert_countries_row_to_result(country_result, row):
     country_result["iso_code"]= row["iso_code"]
     country_result["region"]= row["region"]
@@ -150,10 +160,11 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
                 epidemiologists_list.append(row["source_epidemiologiste"])
 
             hospitalisation_stats_result["id_stat"] = daily_stats_index
-            hospitalisation_stats_result["icu_patients"] = row["icu_patients"]
-            hospitalisation_stats_result["hosp_patients"] = row["hosp_patients"]
+            hospitalisation_stats_result["icu_patients"] = convert_float_to_int(row["icu_patients"])
+            hospitalisation_stats_result["hosp_patients"] = convert_float_to_int(row["hosp_patients"])
             
             daily_stats_result_list.append(daily_stats_result)
+        
             hospitalisation_stats_result_list.append(hospitalisation_stats_result)
             counter+=1
     
@@ -167,8 +178,10 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
         for row in csv_reader:
             if row["tests"] or row["vaccinations"] :
                 check_if_pays_date_already_used(row, daily_stats_result_list, vaccinations_stats_result_list)
-         
+
+    #print(daily_stats_result_list)     
     write_dict_into_file(daily_stats_result_list, "CleanedCSV/cleaned_daily_stats.csv", daily_stats_fields_name)
+    
     write_dict_into_file(vaccinations_stats_result_list, "CleanedCSV/cleaned_vaccinations_stats.csv", vaccinations_stats_fields_name)
     write_dict_into_file(hospitalisation_stats_result_list, "CleanedCSV/cleaned_hospitalisation_stats.csv", hospitalisation_stats_fields_name)
     write_dict_into_file(epidemiologists_result_list, 'CleanedCSV/cleaned_epidemiologists.csv', ["id"])
@@ -189,21 +202,27 @@ def check_if_pays_date_already_used(vaccinations , daily_stats_result_list, vacc
             is_founded = True
             break
     if is_founded == False:
+        daily_stats_result = dict.fromkeys(["id_stat", "pays", "date", "epidemiologist"])
         daily_stats_index+=1
-        vaccinations_stats_result["id_stat"] = vaccination_daily_stat
-        
+        vaccinations_stats_result["id_stat"] =daily_stats_index
+        #print()
         daily_stats_result["id_stat"] = daily_stats_index
         daily_stats_result["epidemiologist"] = "NULL"
         daily_stats_result["pays"] =vaccinations["iso_code"]
         daily_stats_result["date"] = convert_ugly_date_to_pretty_date (vaccinations["date"])
+        daily_stats_result_list.append(daily_stats_result)
     
-    
-    vaccinations_stats_result["nb_tests"] = return_null_if_none(vaccinations,"tests")
-    vaccinations_stats_result["nb_vaccinations"] = return_null_if_none(vaccinations,"vaccinations")
-    vaccinations_result_list.append(vaccinations_stats_result)
 
-    daily_stats_result_list.append(daily_stats_result)
-      
+    vaccinations_stats_result["nb_tests"] = convert_float_to_int(vaccinations["tests"])
+    vaccinations_stats_result["nb_vaccinations"] = convert_float_to_int(vaccinations["vaccinations"])
+    vaccinations_result_list.append(vaccinations_stats_result)
+    #for daily_stat in daily_stats_result_list:
+    #if daily_stats_result not in daily_stats_result_list:
+        #print(daily_stats_result)
+    #    daily_stats_result_list.append(daily_stats_result)
+    #if daily_stats_result
+    
+   
 
 from dateutil import parser
 def convert_ugly_date_to_pretty_date(ugly_date_string):
