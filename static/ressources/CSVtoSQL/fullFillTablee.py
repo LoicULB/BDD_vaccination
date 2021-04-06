@@ -28,7 +28,7 @@ def fullfill_cv():
 def fullfill_sj():
     with open("fullfill_sj.sql", "w") as file:
         df = pandas.read_csv(os.path.join(directory, 'cleaned_daily_stats.csv'), header=0, names=['id_stat','pays','date','epidemiologist'])
-        write_insert_statement("statsjournalieres", df, file)
+        write_insert_statement("stats_journalieres", df, file)
     
 
 def fullfill_hs():
@@ -38,7 +38,7 @@ def fullfill_hs():
   
 
 def fullfill_vs():
-    with open("fullfill_vc.sql", "w") as file:
+    with open("fullfill_vs.sql", "w") as file:
         df = pandas.read_csv(os.path.join(directory, 'cleaned_vaccinations_stats.csv'), header=0,
                          names=["id_stat","nb_tests","nb_vaccinations"])
         write_insert_statement('vaccinations_stats', df, file)
@@ -75,7 +75,7 @@ def fullfill_climate():
 def fullfill_epidemiologist():
     with open("fullfill_epidemiologist.sql", "w") as file:
         df = pandas.read_csv(os.path.join(directory, 'cleaned_epidemiologists.csv'), sep=';')
-        write_insert_statement("epidemiologist(uuid)", df, file)
+        write_insert_statement("epidemiologiste(uuid)", df, file)
 directory = sys.argv[1]
 fullfill_cv()
 fullfill_sj()

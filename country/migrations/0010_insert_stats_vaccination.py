@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            sql=[(get_sql_from_ressources_files('CSVtoSQL/fullfill_vc.sql'))],
+            sql=[(get_sql_from_ressources_files('CSVtoSQL/fullfill_vs.sql'))],
             reverse_sql=[(get_sql_from_ressources_files('CSVtoSQL/reverse_fill/reverse_fullfill_vaccinations_stats.sql'))]
         )        
     ]

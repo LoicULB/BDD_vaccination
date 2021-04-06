@@ -100,7 +100,7 @@ def add_vaccination_campaign_start_to_countries(country_result_list, campaign_va
     start_founded = False
     for country_result in country_result_list:
         if country_result["iso_code"] == campaign_vaccine["iso_code"]:
-            country_result["vaccination_campaign_start"] = campaign_vaccine["date"]
+            country_result["vaccination_campaign_start"] = convert_ugly_date_to_pretty_date(campaign_vaccine["date"])
             break
 def add_campaign_vaccines_to_list(campaign_vaccines_result_list, campaign_vaccines_fields_name, vaccines, country):
     for vaccine in vaccines: 
@@ -143,7 +143,7 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
             daily_stats_index+=1
             daily_stats_result["id_stat"] = daily_stats_index
             daily_stats_result["pays"] = row["iso_code"]
-            daily_stats_result["date"] = row["date"]
+            daily_stats_result["date"] = convert_ugly_date_to_pretty_date(row["date"])
             daily_stats_result["epidemiologist"] = row["source_epidemiologiste"]
 
             if not row["source_epidemiologiste"] in epidemiologists_list:
@@ -209,7 +209,7 @@ from dateutil import parser
 def convert_ugly_date_to_pretty_date(ugly_date_string):
     
     dto = parser.parse(ugly_date_string)
-    return dto.strftime("%m/%d/%Y")
+    return dto.strftime("%d/%m/%Y")
 
     
 create_countries_tables("country.csv")

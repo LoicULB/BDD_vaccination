@@ -15,7 +15,7 @@ CREATE TABLE Climat (
 
 CREATE TABLE Pays (
 	ISO varchar(15) NOT NULL PRIMARY KEY,
-	Region varchar(50) NOT NULL CONSTRAINT region_fk REFERENCES Region(nom),
+	Region varchar(50) CONSTRAINT region_fk REFERENCES Region(nom),
 	Nom varchar(50) UNIQUE,
 	hdi float,
 	Surface BIGINT,
@@ -90,6 +90,21 @@ BEGIN
 	INSERT INTO utilisateur(uuid) VALUES (NEW.uuid);
 	RETURN NEW;
 END; $$;
+
+CREATE OR REPLACE FUNCTION auto_insert_pays() RETURNS TRIGGER
+LANGUAGE PLPGSQL AS $$
+BEGIN
+
+	IF NOT EXISTS (SELECT iso FROM pays WHERE iso=NEW.iso_pays) THEN
+		INSERT INTO pays(iso) VALUES (NEW.iso_pays);
+	END IF;
+	RETURN NEW;
+END; $$;
+
+CREATE TRIGGER auto_insert_pays BEFORE INSERT ON campagne_vaccin FOR EACH ROW 
+EXECUTE PROCEDURE auto_insert_pays();
+CREATE TRIGGER auto_insert_pays BEFORE INSERT ON stats_journalieres FOR EACH ROW 
+EXECUTE PROCEDURE auto_insert_pays();
 
 CREATE TRIGGER auto_insert_user BEFORE INSERT ON epidemiologiste FOR EACH ROW 
 EXECUTE PROCEDURE auto_insert_user();
