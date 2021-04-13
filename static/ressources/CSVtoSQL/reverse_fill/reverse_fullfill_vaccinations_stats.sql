@@ -1,1 +1,1 @@
-DELETE from vaccinations_stats
+DELETE from vaccinnations_stats

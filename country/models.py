@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Country(models.Model):
+class Pays(models.Model):
 
     iso = models.CharField("ISO", max_length=3, primary_key=True)
     name = models.CharField("nom", max_length=50, unique=True)
@@ -22,3 +22,5 @@ class Climat(models.Model):
 
     def __str__(self):
         return self.description
+
+   

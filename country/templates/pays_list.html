@@ -1,0 +1,63 @@
+{% extends "country/_base.html" %}
+{% load static %}
+{% block title%} Liste des pays {% endblock %}
+
+
+{% block content %}
+
+  
+
+
+<div class=" container shadow-textarea py-3 px-3 my-3 z-depth-1">
+{% if countrys%}
+<table id="country-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th >ISO</th>
+        <th>Name</th>
+        <th>HDI</th>
+        <th>Population</th>
+    </tr>
+    </thead>
+    <tbody>
+        {%for country in countrys%}
+
+        <tr>
+            <td>{{country.iso}}</a></td>
+            <td>{{country.name}}</td>
+            <td>{{country.hdi}}</td>
+            <td>{{country.population}}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+
+</table>
+</div>
+
+
+
+
+</div>
+ {% else %}
+ Pas de pays
+ {% endif %}
+
+{% endblock content %}
+{% block script %}
+
+
+<script>
+$(document).ready( function () {
+    $('#country-table').DataTable({
+        language: {
+        url: "https://cdn.datatables.net/plug-ins/1.10.20/i18n/French.json"
+        
+        
+        
+        //use local if necessary
+    }}
+    );
+} );
+</script>
+{% endblock script %}

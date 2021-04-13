@@ -1,18 +1,47 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic import DetailView, TemplateView
-from country.models import Country, Climat
-
+from .models import Pays, Climat
+from django.db import connection
 # Create your views here.
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
+def dictGetColumn(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return columns
+        
+    
 class CountryListView(ListView):
-    model = Country
+    #model = Pays
     context_object_name= "countrys"
-    queryset = Country.objects.raw("SELECT * FROM Country;")
+    queryset = Pays.objects.raw("SELECT * FROM Pays;")
+
+class CountryListView2(TemplateView):
+    
+    template_name= "country/pays_list.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM Pays;")
+            
+            row = dictfetchall(cursor)
+            context["countrys"] = list((row))
+            context["columns"] = dictGetColumn(cursor)
+ 
+        
+   
+        return context
 
 class CountryDetailView(DetailView):
-    model = Country
+    model = Pays
     context_object_name= "country"
-    #queryset = Country.objects.raw("SELECT * FROM Country WHERE iso=%s;", [request.GET.get("iso")])
+    #queryset = Pays.objects.raw("SELECT * FROM Pays WHERE iso=%s;", [request.GET.get("iso")])
 
 class CountryDetailView2(TemplateView):
     
@@ -20,7 +49,7 @@ class CountryDetailView2(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print("Param : " +kwargs["iso"] )
-        raw_sql = Country.objects.raw("SELECT * FROM Country WHERE iso=%s;", [kwargs["iso"]])
+        raw_sql = Pays.objects.raw("SELECT * FROM Country WHERE iso=%s;", [kwargs["iso"]])
         context["country"] = raw_sql[0]
         return context
 
