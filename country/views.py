@@ -30,7 +30,7 @@ class CountryListView2(TemplateView):
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM Pays;")
             
-            row = dictfetchall(cursor)
+            row = cursor.fetchall()
             context["countrys"] = list((row))
             context["columns"] = dictGetColumn(cursor)
  

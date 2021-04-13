@@ -29,9 +29,9 @@
         {%for country in countrys%}
         
         <tr>
-        {% for key, value in country.items%}
+        {%for value in country%}
             <td>{{value}}</td>
-               {% endfor %}
+        {%endfor%}
         </tr>
       
         {% endfor %}
