@@ -4,39 +4,37 @@ from django.views.generic import DetailView, TemplateView
 from .models import Pays, Climat
 from django.db import connection
 # Create your views here.
-def dictfetchall(cursor):
-    "Return all rows from a cursor as a dict"
-    columns = [col[0] for col in cursor.description]
-    return [
-        dict(zip(columns, row))
-        for row in cursor.fetchall()
-    ]
+
 def dictGetColumn(cursor):
-    "Return all rows from a cursor as a dict"
+    "Return all columns of select statement"
     columns = [col[0] for col in cursor.description]
     return columns
-        
-    
-class CountryListView(ListView):
-    #model = Pays
-    context_object_name= "countrys"
-    queryset = Pays.objects.raw("SELECT * FROM Pays;")
 
-class CountryListView2(TemplateView):
-    
-    template_name= "country/pays_list.html"
+class QueryView(TemplateView):
+    query = None
+    query_context_name = None
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM Pays;")
+            cursor.execute(self.query)
             
             row = cursor.fetchall()
-            context["countrys"] = list((row))
+            context[self.query_context_name] = list((row))
             context["columns"] = dictGetColumn(cursor)
- 
-        
-   
+            
         return context
+    def get_query(self):
+        return self.query
+    def get_query_context_name(self):
+        return self.get_query_context_name
+
+
+class CountryListView(QueryView):
+    
+    template_name= "country/pays_list.html"
+    query = "SELECT * FROM Pays;"
+    query_context_name= "countrys"
+
 
 class CountryDetailView(DetailView):
     model = Pays
