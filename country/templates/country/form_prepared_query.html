@@ -1,0 +1,34 @@
+{% extends "country/_base.html" %}
+{% load static %}
+{% block title%} Form prepared query {% endblock %}
+
+
+{% block content %}
+
+<form action="{% url "country:receive-form-prepared-query" %}" method="get">
+  <p>Choisissez votre requête à exécuter</p>
+  <input type="radio" id="query1" name="query" value="SELECT distinct p.iso, p.nom FROM pays p join stats_journalieres sj ON p.iso = sj.iso_pays JOIN hospitalisations_stats hs on hs.id=sj.id WHERE hs.hosp_patiens>=5000;">
+  <label for="query1">Pays ayant au moins 5000 personnes hospitalisées au même moment</label><br>
+  
+  <input type="radio" id="query2" name="query" value="SELECT p.nom FROM pays p JOIN stats_journalieres sj ON p.iso = sj.iso_pays JOIN vaccinnations_stats vs on vs.id = sj.id GROUP BY p.nom HAVING MAX(sum(sj.vaccinations));">
+  <label for="query2">Pays ayant administré le plus grand nombre total de vaccins</label><br>
+  
+   <input type="radio" id="query3" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
+   <label for="query3">Quels vaccins pour quels pays</label><br>
+  
+    <input type="radio" id="query4" name="query" value="SELECT (sum(vs.vaccinations)/p.population)*100 FROM pays p JOIN stats_journalieres sj ON p.iso = sj.iso_pays NATURAL JOIN vaccinnations_stats WHERE $sj.date=01/01/2021$">
+   <label for="query4">Proportion du nombre de personne vaccinées au premier janvier 2021</label><br>
+  
+    <input type="radio" id="query4" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
+   <label for="query4">Quels vaccins pour quels pays</label><br>
+  
+    <input type="radio" id="query5" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
+   <label for="query5">Quels vaccins pour quels pays</label><br>
+    <input type="radio" id="query6" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
+   <label for="query6">Quels vaccins pour quels pays</label><br>
+  
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}

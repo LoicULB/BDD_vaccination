@@ -13,6 +13,7 @@ def dictGetColumn(cursor):
 class QueryView(TemplateView):
     query = None
     query_context_name = None
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         with connection.cursor() as cursor:
@@ -32,7 +33,7 @@ class QueryView(TemplateView):
 class CountryListView(QueryView):
     
     template_name= "country/pays_list.html"
-    query = "SELECT * FROM Pays;"
+    query = "SELECT distinct nom_vaccin FROM campagne_vaccin;"
     query_context_name= "countrys"
 
 
@@ -56,5 +57,19 @@ class ClimatListView(ListView):
     context_object_name= "climats"
     queryset = Climat.objects.raw("SELECT * FROM Climat;")
 
+class FormPreparedQuery(TemplateView):
+    template_name= "country/form_prepared_query.html"
+
+def handle_form_prepared_query(request):
+    print(request.GET["query"])
+    query = request.GET["query"]
+    
+    with connection.cursor() as cursor:
+            cursor.execute(query)
+            
+            row = cursor.fetchall()
+            result  = list((row))
+            col = dictGetColumn(cursor)
+    return render(request, 'country/pays_list.html', {'countrys': result , 'columns' : col })
     
 
