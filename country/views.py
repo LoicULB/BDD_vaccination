@@ -33,7 +33,7 @@ class QueryView(TemplateView):
 class CountryListView(QueryView):
     
     template_name= "country/pays_list.html"
-    query = "SELECT distinct nom_vaccin FROM campagne_vaccin;"
+    query = "SELECT * FROM pays;"
     query_context_name= "countrys"
 
 

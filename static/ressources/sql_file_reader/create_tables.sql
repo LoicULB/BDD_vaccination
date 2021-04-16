@@ -70,8 +70,9 @@ CREATE TABLE Stats_Journalieres (
 
 CREATE TABLE Vaccinnations_stats (
 	id INT NOT NULL CONSTRAINT idvaccination_fk REFERENCES Stats_Journalieres(id),
-	vaccinations BIGINT,
 	test BIGINT,
+	vaccinations BIGINT,
+
 	CONSTRAINT Vaccinnations_pk PRIMARY KEY(id)
 );
 
