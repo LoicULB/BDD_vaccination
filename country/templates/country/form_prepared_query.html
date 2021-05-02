@@ -5,9 +5,9 @@
 
 {% block content %}
 <div class=" container shadow-textarea py-3 px-3 my-3 pl-4 z-depth-1">
-<form action="{% url "country:receive-form-prepared-query" %}" method="get">
+<form action="{% url "country:receive-form-prepared-query" %}" method="get"> <!--## a quel url on envoi-->
   <p>Choisissez votre requête à exécuter</p>
-  <div class="custom-control custom-radio">
+  <div class="custom-control custom-radio"> <!--## envoie-->
     <input class="custom-control-input" type="radio" id="query1" name="query" value="SELECT distinct p.iso, p.nom FROM pays p join stats_journalieres sj ON p.iso = sj.iso_pays JOIN hospitalisations_stats hs on hs.id=sj.id WHERE hs.hosp_patiens>=5000;">
     <label class="custom-control-label" for="query1">Pays ayant au moins 5000 personnes hospitalisées au même moment</label><br>
   </div>
@@ -37,7 +37,7 @@
    <label class="custom-control-label" for="query6">Quels vaccins pour quels pays</label><br>
    </div>
 
-    <input class="btn btn-primary my-4 btn-block"  type="submit" value="Submit">
+    <input class="btn btn-primary my-4 btn-block"  type="submit" value="Submit"> <!--## envoie l'url à l'endroit spécifié -->
 </form>
 </div>
 {% endblock content %}

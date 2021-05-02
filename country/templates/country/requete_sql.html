@@ -1,0 +1,21 @@
+{% extends "country/_base.html" %}
+{% block title%} Requete_SQL {% endblock %}
+
+
+{% block content %}
+
+<form action="{% url "country:receive-form-prepared-query" %}" method="get">
+<label for="SQL"> -----> ecris ta requete SQL -------> :</label>
+<textarea id="SQL" name="query"
+          rows="20" cols="50" resize: both
+          placeholder="Entre ta requete SQL"></textarea>
+
+
+
+<input class="btn btn-primary my-4 btn-block"  type="submit" value="Submit"> 
+
+</form>
+
+
+
+{% endblock content %}

@@ -34,6 +34,16 @@
 <a class="nav-link" href="{% url 'country:country-list' %}">Country</a>
 </li>
 
+<li id="nav-dev" class="nav-item {%if request.resolver_match.app_name == "country"%} active {%endif%}">
+<a class="nav-link" href="{% url 'country:form-prepared-query' %}">prepared_query</a>
+</li>
+
+
+<li id="nav-dev" class="nav-item {%if request.resolver_match.app_name == "country"%} active {%endif%}">
+<a class="nav-link" href="{% url 'country:requete-sql' %}">Requete_SQL</a>
+</li>
+
+
 
 </ul>
 </nav>

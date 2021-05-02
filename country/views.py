@@ -72,4 +72,7 @@ def handle_form_prepared_query(request):
             col = dictGetColumn(cursor)
     return render(request, 'country/pays_list.html', {'countrys': result , 'columns' : col })
     
+class Sql_query(TemplateView):
+    template_name= "country/requete_sql.html"
+
 
