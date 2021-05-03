@@ -3,6 +3,22 @@ from django.views.generic.list import ListView
 from django.views.generic import DetailView, TemplateView
 from .models import Pays, Climat
 from django.db import connection
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class LoginView(TemplateView):
+    template_name = "registration/login.html"
+def my_view(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        # Redirect to a success page.
+        ...
+    else:
+        # Return an 'invalid login' error message.
+        ...
 # Create your views here.
 
 def dictGetColumn(cursor):
@@ -10,7 +26,7 @@ def dictGetColumn(cursor):
     columns = [col[0] for col in cursor.description]
     return columns
 
-class QueryView(TemplateView):
+class QueryView(LoginRequiredMixin,TemplateView):
     query = None
     query_context_name = None
     

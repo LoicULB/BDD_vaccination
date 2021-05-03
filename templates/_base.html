@@ -25,7 +25,7 @@
 
 </div>
 <nav class="navbar navbar-expand-sm bg-primary navbar-dark border-top borderwhite mb-3">
-<ul class="navbar-nav">
+<ul class="navbar-nav mr-auto">
 <li id="nav-home" class="nav-item">
 <a class="nav-link" href="/"><i class="fa fa-home"></i></a>
 </li>
@@ -34,8 +34,18 @@
 <a class="nav-link" href="{% url 'country:country-list' %}">Country</a>
 </li>
 
-
 </ul>
+  <div class="nav-item dropdown my-2 my-lg-0 ml-0 text-white mr-2">
+      <a class="nav-link dropdown-toggle pr-0" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          {{request.user.username}}  <i class="fas fa-user pl-1 "></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right dropdown-default "
+          aria-labelledby="navbarDropdownMenuLink-333">
+        <a class="dropdown-item" href={% url 'logout' %}>Disconnect</a>
+        <a class="dropdown-item" href="#">Change paswd</a>
+      </div>
+    </div>
 </nav>
 
 {% block content %}

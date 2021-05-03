@@ -11,7 +11,13 @@
 <div class=" container shadow-textarea py-3 px-3 my-3 z-depth-1">
 {% if countrys%}
 
-
+Let the body
+{% if user.is_authenticated %}
+user authentifié
+{{user}}
+{{user.id}}
+{{user.username}}
+{% endif%}
 
 <table id="country-table" class="table table-striped">
     <thead>
