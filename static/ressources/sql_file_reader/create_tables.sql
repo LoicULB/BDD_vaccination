@@ -41,8 +41,8 @@ CREATE TABLE Campagne_Vaccin (
 
 --
 CREATE TABLE Utilisateur (
-	--id SERIAL NOT NULL PRIMARY KEY,
-	uuid uuid NOT NULL PRIMARY KEY,
+	id SERIAL NOT NULL PRIMARY KEY,
+	uuid uuid NOT NULL UNIQUE,
 	Nom varchar(40),
 	Prenom varchar(40),
 	pseudo varchar(40)  , --should be not null
@@ -54,8 +54,8 @@ CREATE TABLE Utilisateur (
 );
 
 CREATE TABLE Epidemiologiste (
-	--id int NOT NULL CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
-	uuid uuid NOT NULL PRIMARY KEY CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
+	--id int NOT NULL PRIMARY KEY CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
+	uuid uuid NOT NULL Unique CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
 	centre varchar(40),
 	telephone_service varchar(20)
 );
@@ -109,3 +109,6 @@ EXECUTE PROCEDURE auto_insert_pays();
 
 CREATE TRIGGER auto_insert_user BEFORE INSERT ON epidemiologiste FOR EACH ROW 
 EXECUTE PROCEDURE auto_insert_user();
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+INSERT INTO utilisateur(uuid, pseudo, mot_de_passe) VALUES (uuid_generate_v4(), 'Harry', $$Caput Draconis$$)

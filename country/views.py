@@ -5,6 +5,8 @@ from .models import Pays, Climat
 from django.db import connection
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
 
 class LoginView(TemplateView):
     template_name = "registration/login.html"
@@ -25,13 +27,26 @@ def dictGetColumn(cursor):
     "Return all columns of select statement"
     columns = [col[0] for col in cursor.description]
     return columns
+def is_dsl(query):
+    splited_query=query.split(" ")
+    return splited_query[0].lower() == "select"
 
+def is_user_epidemiologist(user):
+    with connection.cursor() as cursor:
+            cursor.execute("""SELECT e.uuid 
+                            FROM utilisateur u join epidemiologiste e ON u.uuid=e.uuid
+                            WHERE u.id=%s""", [user.id])
+            
+            row = cursor.fetchone()
+    return row is not None
 class QueryView(LoginRequiredMixin,TemplateView):
     query = None
     query_context_name = None
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(self.request.user)
+        print(is_user_epidemiologist(self.request.user))
         with connection.cursor() as cursor:
             cursor.execute(self.query)
             
@@ -73,9 +88,9 @@ class ClimatListView(ListView):
     context_object_name= "climats"
     queryset = Climat.objects.raw("SELECT * FROM Climat;")
 
-class FormPreparedQuery(TemplateView):
+class FormPreparedQuery(TemplateView, LoginRequiredMixin):
     template_name= "country/form_prepared_query.html"
-
+@login_required
 def handle_form_prepared_query(request):
     print(request.GET["query"])
     query = request.GET["query"]

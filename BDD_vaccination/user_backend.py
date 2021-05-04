@@ -21,16 +21,16 @@ class MyBackend(BaseBackend):
                     return User(id=username)
         else :
             with connection.cursor() as cursor1:
-                cursor1.execute("SELECT uuid, mot_de_passe FROM Utilisateur WHERE pseudo=%s", [username])
+                cursor1.execute("SELECT id, mot_de_passe FROM Utilisateur WHERE pseudo=%s", [username])
             
                 row2 = cursor1.fetchone()
                 if (password == row2[1]):
                     try:
-                        user = User.objects.get(username=username)
+                        user = User.objects.get(id=row2[0])
                     except User.DoesNotExist:
                         # Create a new user. There's no need to set a password
                         # because only the password from settings.py is checked.
-                        user = User(username=username)
+                        user = User(id=row2[0], username=username)
                 
                         user.save()
                     return user

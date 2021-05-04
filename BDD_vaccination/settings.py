@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'country',
-    'login',
+
 ]
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
