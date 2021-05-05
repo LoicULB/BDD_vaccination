@@ -1,0 +1,35 @@
+{% extends "country/_base.html" %}
+{% block title%} Requete_SQL {% endblock %}
+
+
+{% block content %}
+
+<form class =" container shadow-textarea py-3 px-3 my-3 z-depth-1 "action="{% url "country:receive-form-prepared-query" %}" method="get">
+
+
+  <!-- Message input -->
+  <div class="md-form mb-4 ">
+    <textarea class="form-control md-textarea {%if errors%}is-invalid {%endif%}"  id="SQL" name="query"
+          rows="10" cols="50"
+         ></textarea>
+    <label for="SQL">Ma requête SQL</label>
+       <div class="invalid-feedback">
+            {{errors}}
+      </div>
+      
+
+  </div>
+ 
+  {%if errors %}
+
+
+
+  {%endif%}
+
+<input class="btn btn-primary my-4 btn-block"  type="submit" value="Submit"> 
+
+</form>
+
+
+
+{% endblock content %}

@@ -47,12 +47,18 @@ class QueryView(LoginRequiredMixin,TemplateView):
         context = super().get_context_data(**kwargs)
         print(self.request.user)
         print(is_user_epidemiologist(self.request.user))
-        with connection.cursor() as cursor:
-            cursor.execute(self.query)
+        if (is_dsl):
+            if( not is_user_epidemiologist(self.request.user)):
+                print("MDR t'es pas un epi mon coco")
+            else :
+                print("Tu es un épi mon coco")
+
+                with connection.cursor() as cursor:
+                    cursor.execute(self.query)
             
-            row = cursor.fetchall()
-            context[self.query_context_name] = list((row))
-            context["columns"] = dictGetColumn(cursor)
+                    row = cursor.fetchall()
+                    context[self.query_context_name] = list((row))
+                    context["columns"] = dictGetColumn(cursor)
             
         return context
     def get_query(self):
@@ -94,13 +100,25 @@ class FormPreparedQuery(TemplateView, LoginRequiredMixin):
 def handle_form_prepared_query(request):
     print(request.GET["query"])
     query = request.GET["query"]
-    
-    with connection.cursor() as cursor:
-            cursor.execute(query)
+    error= None
+    if (is_dsl):
+            if( not is_user_epidemiologist(request.user)):
+                print("MDR t'es pas un epi mon coco lapin")
+                error = "MDR faut être un épidemiologiste pour pouvoir faire du DDL mon coco"
+                return render(request, 'country/requete_sql.html', {'errors' : error })
+            else :
+                print("Tu es un épi mon coco")
+
+                with connection.cursor() as cursor:
+                    cursor.execute(query)
             
-            row = cursor.fetchall()
-            result  = list((row))
-            col = dictGetColumn(cursor)
+                    row = cursor.fetchall()
+                    result  = list((row))
+                    col = dictGetColumn(cursor)
+                    
     return render(request, 'country/pays_list.html', {'countrys': result , 'columns' : col })
     
+class Sql_query(TemplateView):
+    template_name= "country/requete_sql.html"
+
 

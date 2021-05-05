@@ -55,7 +55,7 @@ CREATE TABLE Utilisateur (
 
 CREATE TABLE Epidemiologiste (
 	--id int NOT NULL PRIMARY KEY CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
-	uuid uuid NOT NULL Unique CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid),
+	uuid uuid NOT NULL Unique CONSTRAINT idepidemiologiste_fk REFERENCES Utilisateur(uuid) ON DELETE CASCADE,
 	centre varchar(40),
 	telephone_service varchar(20)
 );
