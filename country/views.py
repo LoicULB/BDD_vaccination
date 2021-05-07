@@ -11,28 +11,20 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-class LoginView(TemplateView):
-    template_name = "registration/login.html"
-def my_view(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        # Redirect to a success page.
-        ...
-    else:
-        # Return an 'invalid login' error message.
-        ...
+from django.db import Error, IntegrityError
+
 # Create your views here.
 
 def dictGetColumn(cursor):
     "Return all columns of select statement"
     columns = [col[0] for col in cursor.description]
     return columns
-def is_dsl(query):
+def get_sql_type(query):
     splited_query=query.split(" ")
-    return splited_query[0].lower() == "select"
+    return splited_query[0].lower()
+def is_dsl(query):
+    
+    return get_sql_type(query) == "select"
 
 def is_user_epidemiologist(user):
     with connection.cursor() as cursor:
@@ -42,22 +34,26 @@ def is_user_epidemiologist(user):
             
             row = cursor.fetchone()
     return row is not None
+def execute_sql(sql):
+    response = {}
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+            
+        row = cursor.fetchall()
+        response["result"]  = list((row))
+        response["columns"] = dictGetColumn(cursor) 
+    return response
 class QueryView(LoginRequiredMixin,TemplateView):
     query = None
     query_context_name = None
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(make_password("Pikachu"))
-        print(check_password("Pikachu", "pbkdf2_sha256$216000$NRinKHRX2HRS$cTc6kK/J9gBDSSCrfMCOkPObJZMwCD+dX4jpLrNtqfM="))
-        print(self.request.user)
-        print(is_user_epidemiologist(self.request.user))
-        with connection.cursor() as cursor:
-            cursor.execute(self.query)
-            row = cursor.fetchall()
-            context[self.query_context_name] = list((row))
-            context["columns"] = dictGetColumn(cursor)
-            
+        
+        response_sql = execute_sql(self.query)
+        context[self.query_context_name] = response_sql["result"] 
+        context["columns"] = response_sql["columns"]
+           
         return context
     def get_query(self):
         return self.query
@@ -72,32 +68,11 @@ class CountryListView(QueryView):
     query_context_name= "countrys"
 
 
-class CountryDetailView(DetailView):
-    model = Pays
-    context_object_name= "country"
-    #queryset = Pays.objects.raw("SELECT * FROM Pays WHERE iso=%s;", [request.GET.get("iso")])
-
-class CountryDetailView2(TemplateView):
-    
-    template_name= "country/country_detail.html"
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print("Param : " +kwargs["iso"] )
-        raw_sql = Pays.objects.raw("SELECT * FROM Country WHERE iso=%s;", [kwargs["iso"]])
-        context["country"] = raw_sql[0]
-        return context
-
-class ClimatListView(ListView):
-    model = Climat
-    context_object_name= "climats"
-    queryset = Climat.objects.raw("SELECT * FROM Climat;")
-
 class FormPreparedQuery(TemplateView, LoginRequiredMixin):
     template_name= "country/form_prepared_query.html"
 
-# ajax_posting function
 @login_required
-def ajax_posting(request):
+def writed_query_form_validation(request):
     if request.is_ajax():
         query = request.POST.get('query', None) # getting data from first_name input 
         
@@ -106,17 +81,31 @@ def ajax_posting(request):
             if( not is_user_epidemiologist(request.user)):
                 msg = "MDR t'es pas un epi mon coco lapin"
             
-        
                 response = {
                     
                     'msg': msg # response message
                 }
                 return HttpResponse(msg, status=403)
-                #return JsonResponse(response, status=400) # return response as JSON
+            else :
+                try:
+                    with connection.cursor() as cursor:
+                        cursor.execute(query)
+                    response = {
+                        'type' : get_sql_type(query),
+                        'msg': "L'instruction " +get_sql_type(query) + " s'est bien déroulée" # response message
+                    }
+                    return JsonResponse(response) 
+                    # code that produces error
+                except Error as e:
+                        
+                    return HttpResponse(str(e), status=500)
+                
+                
+                
         response = {
-                    
+            'type' : get_sql_type(query),   
             'msg': "success", # response message
-            'url' : reverse('country:country-list'),
+            'url' : reverse('country:receive-form-prepared-query') +"?query=" + query,
 
         }
         return JsonResponse(response)  
@@ -142,16 +131,12 @@ def handle_form_prepared_query(request):
                
                 result  = ""
                 col = ""
-                return render(request, 'country/requete_sql.html', {'errors' : "Success" })
+                return render(request, 'country/requete_sql.html', {'success' : "Success" })
     else:
-        print("C'est du DSL")     
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            
-            row = cursor.fetchall()
-            result  = list((row))
-            col = dictGetColumn(cursor)       
-    return render(request, 'country/pays_list.html', {'countrys': result , 'columns' : col })
+          
+        response_sql = execute_sql(query)
+        
+    return render(request, 'country/select_results.html', {'results': response_sql["result"] , 'columns' : response_sql["columns"] })
     
 class Sql_query(TemplateView):
     template_name= "country/requete_sql.html"
