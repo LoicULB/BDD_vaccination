@@ -6,8 +6,11 @@ from django.db import connection
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-
-
+from django.contrib.auth.hashers import make_password, check_password
+from django.http import JsonResponse
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.urls import reverse
 class LoginView(TemplateView):
     template_name = "registration/login.html"
 def my_view(request):
@@ -45,6 +48,8 @@ class QueryView(LoginRequiredMixin,TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(make_password("Pikachu"))
+        print(check_password("Pikachu", "pbkdf2_sha256$216000$NRinKHRX2HRS$cTc6kK/J9gBDSSCrfMCOkPObJZMwCD+dX4jpLrNtqfM="))
         print(self.request.user)
         print(is_user_epidemiologist(self.request.user))
         with connection.cursor() as cursor:
@@ -89,6 +94,33 @@ class ClimatListView(ListView):
 
 class FormPreparedQuery(TemplateView, LoginRequiredMixin):
     template_name= "country/form_prepared_query.html"
+
+# ajax_posting function
+@login_required
+def ajax_posting(request):
+    if request.is_ajax():
+        query = request.POST.get('query', None) # getting data from first_name input 
+        
+        if (not is_dsl(query)):
+        
+            if( not is_user_epidemiologist(request.user)):
+                msg = "MDR t'es pas un epi mon coco lapin"
+            
+        
+                response = {
+                    
+                    'msg': msg # response message
+                }
+                return HttpResponse(msg, status=403)
+                #return JsonResponse(response, status=400) # return response as JSON
+        response = {
+                    
+            'msg': "success", # response message
+            'url' : reverse('country:country-list'),
+
+        }
+        return JsonResponse(response)  
+
 @login_required
 def handle_form_prepared_query(request):
     print(request.GET["query"])

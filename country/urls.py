@@ -9,6 +9,7 @@ urlpatterns = [
     path('receive_form_prepared_query', views.handle_form_prepared_query , name="receive-form-prepared-query"),
     path('login', views.LoginView.as_view(), name="login"),
     path('requete_sql', views.Sql_query.as_view() , name="requete-sql"),
+    path('ajax-posting/', views.ajax_posting, name='ajax_posting'),
 
    
 ]

@@ -46,7 +46,7 @@ CREATE TABLE Utilisateur (
 	Nom varchar(40),
 	Prenom varchar(40),
 	pseudo varchar(40)  , --should be not null
-	mot_de_passe varchar(40)  , --should be not null
+	mot_de_passe varchar(100)  , --should be not null
 	rue_Adresse varchar(100),
 	code_postal_adresse INT,
 	numero_adresse INT,

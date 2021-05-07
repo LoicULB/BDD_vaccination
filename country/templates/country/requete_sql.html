@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<form class =" container shadow-textarea py-3 px-3 my-3 z-depth-1 "action="{% url "country:receive-form-prepared-query" %}" method="get">
+<form id="form" class =" container shadow-textarea py-3 px-3 my-3 z-depth-1 " {% comment %} action="{% url "country:receive-form-prepared-query" %}"{% endcomment %} method="post">
 
 
   <!-- Message input -->
@@ -13,7 +13,7 @@
           rows="10" cols="50"
          ></textarea>
     <label for="SQL">Ma requête SQL</label>
-       <div class="invalid-feedback">
+       <div id="invalid-feedback" class="invalid-feedback">
             {{errors}}
       </div>
       
@@ -30,6 +30,54 @@
 
 </form>
 
+<div id="output">
 
+</div>
 
 {% endblock content %}
+
+{% block script %}
+
+
+
+<script>
+$('#form').on('submit', function(e){
+
+e.preventDefault();
+
+  $.ajax({
+       type : "POST", 
+       url: "{% url 'country:ajax_posting' %}",
+       data: {
+        query : $('#SQL').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        dataType: "json",
+
+       },
+       
+       success: function(data){
+          window.location = data.url;
+            
+         
+         
+       },
+
+       failure: function(data) {
+           $('#SQL').addClass("is-invalid")
+          $("#invalid-feedback").append(data.msg)
+       },
+       error: function (error) {
+          console.log(error.responseText);
+           $('#SQL').addClass("is-invalid")
+           $("#invalid-feedback").append(error.responseText)  
+          
+            
+       }
+
+
+   });
+
+
+        }); 
+        </script>
+{% endblock%}
