@@ -18,8 +18,9 @@ CREATE TABLE Pays (
 	Region varchar(50) CONSTRAINT region_fk REFERENCES Region(nom),
 	Nom varchar(50) UNIQUE,
 	hdi float,
-	Surface BIGINT,
 	Population BIGINT,
+	Surface BIGINT,
+	
 	climat INT CONSTRAINT climat_fk REFERENCES Climat(id),
 	debut_vaccination DATE 
 	
