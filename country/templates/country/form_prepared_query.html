@@ -8,34 +8,31 @@
 <form action="{% url "country:receive-form-prepared-query" %}" method="get"> <!--## a quel url on envoi-->
   <p>Choisissez votre requête à exécuter</p>
   <div class="custom-control custom-radio"> <!--## envoie-->
-    <input class="custom-control-input" type="radio" id="query1" name="query" value="SELECT distinct p.iso, p.nom FROM pays p join stats_journalieres sj ON p.iso = sj.iso_pays JOIN hospitalisations_stats hs on hs.id=sj.id WHERE hs.hosp_patiens>=5000;">
+    <input class="custom-control-input" type="radio" id="query1" name="query" value="SELECT distinct p.nom FROM pays p JOIN stats_journalieres sj ON p.iso=sj.iso_pays JOIN hospitalisations_stats hs ON hs.id=sj.id WHERE hs.hosp_patiens >= 5000">
     <label class="custom-control-label" for="query1">Pays ayant au moins 5000 personnes hospitalisées au même moment</label><br>
   </div>
 
   <div class="custom-control custom-radio">
-    <input class="custom-control-input" type="radio" id="query2" name="query" value="SELECT p.nom FROM pays p JOIN stats_journalieres sj ON p.iso = sj.iso_pays JOIN vaccinnations_stats vs on vs.id = sj.id GROUP BY p.nom HAVING MAX(sum(sj.vaccinations));">
+    <input class="custom-control-input" type="radio" id="query2" name="query" value="select maxi.nom, maxi.iso, maxi.sum from (SELECT distinct p.nom ,SUM(vs.vaccinations), p.iso FROM pays p JOIN stats_journalieres sj ON p.iso = sj.iso_pays JOIN vaccinnations_stats vs ON vs.id=sj.id GROUP BY p.nom, p.iso) maxi where maxi.sum = (SELECT MAX(maxi.sum) from (SELECT distinct p.nom ,SUM(vs.vaccinations), p.iso FROM pays p JOIN stats_journalieres sj ON p.iso = sj.iso_pays JOIN vaccinnations_stats vs ON vs.id=sj.id GROUP BY p.nom, p.iso) maxi)">
     <label class="custom-control-label" for="query2">Pays ayant administré le plus grand nombre total de vaccins</label><br>
    </div>
   <div class="custom-control custom-radio">
-   <input class="custom-control-input" type="radio" id="query3" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
+   <input class="custom-control-input" type="radio" id="query3" name="query" value="SELECT distinct p.nom, cv.nom_vaccin FROM pays p JOIN campagne_vaccin cv ON p.iso=cv.iso_pays GROUP BY cv.nom_vaccin,p.nom">
    <label class="custom-control-label" for="query3">Quels vaccins pour quels pays</label><br>
    </div>
   <div class="custom-control custom-radio">
-    <input class="custom-control-input" type="radio" id="query4" name="query" value="SELECT p.iso , hs.hosp_patiens, p.population, (sum(hs.hosp_patiens)/p.population)*100 as pourcentage FROM pays p JOIN stats_journalieres sj ON p.iso = sj.iso_pays NATURAL JOIN  hospitalisations_stats hs  WHERE sj.date=$$01/01/2021$$  GROUP by p.iso, p.population, hs.hosp_patiens">
+    <input class="custom-control-input" type="radio" id="query4" name="query" value="SELECT cast((( cast(hs.hosp_patiens as float)/ p.population )*100) as numeric(36,2)), p.nom FROM hospitalisations_stats hs JOIN stats_journalieres sj ON sj.id = hs.id JOIN pays p ON p.iso= sj.iso_pays WHERE sj.date = '01/01/2021' Group by p.population, hs.hosp_patiens, p.nom">
    <label class="custom-control-label" for="query4">Proportion de nombre de personnes hospitalisées sur la population le 1/1/2021</label><br>
    </div>
   <div class="custom-control custom-radio">
-    <input class="custom-control-input" type="radio" id="query4" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
-   <label class="custom-control-label" for="query4">Quels vaccins pour quels pays</label><br>
+    <input class="custom-control-input" type="radio" id="query5" name="query" value="SELECT sj.date, hs.hosp_patiens - LEAD(hs.hosp_patiens) OVER (ORDER BY sj.date) NextValue FROM hospitalisations_stats hs JOIN stats_journalieres sj on sj.id = hs.id">
+   <label class="custom-control-label" for="query5">Evolution pour chaque jour et chaque pays de patients hospitalisés</label><br>
    </div>
   <div class="custom-control custom-radio">
-    <input class="custom-control-input" type="radio" id="query5" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
-   <label class="custom-control-label" for="query5">Quels vaccins pour quels pays</label><br>
+    <input class="custom-control-input" type="radio" id="query6" name="query" value="SELECT cv.nom_vaccin FROM campagne_vaccin cv WHERE iso_pays = 'BEL'  INTERSECT SELECT cv.nom_vaccin FROM campagne_vaccin cv WHERE iso_pays = 'FRA'">
+   <label class="custom-control-label" for="query6">Vaccins à la fois dispo en belgique et en france</label><br>
     </div> 
-   <div class="custom-control custom-radio"> 
-    <input class="custom-control-input" type="radio" id="query6" name="query" value="SELECT distinct cv.nom_vaccin, p.iso, p.nom  FROM pays p JOIN campagne_vaccin cv on p.iso=cv.iso_pays GROUP BY cv.nom_vaccin, p.iso, p.nom;">
-   <label class="custom-control-label" for="query6">Quels vaccins pour quels pays</label><br>
-   </div>
+  
 
     <input class="btn btn-primary my-4 btn-block"  type="submit" value="Submit"> <!--## envoie l'url à l'endroit spécifié -->
 </form>
