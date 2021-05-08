@@ -5,8 +5,9 @@ SELECT distinct p.nom
 FROM pays p JOIN stats_journalieres sj ON p.iso=sj.iso_pays JOIN hospitalisations_stats hs ON hs.id=sj.id
 WHERE hs.hosp_patiens >= 5000
 
----Requete 2 ----
-select maxi.nom, maxi.iso, maxi.sum
+---Requete 2 ---- 
+
+select maxi.iso, maxi.nom, maxi.sum
 from (SELECT distinct p.nom ,SUM(vs.vaccinations), p.iso
 FROM pays p 
 JOIN stats_journalieres sj ON p.iso = sj.iso_pays 
@@ -17,21 +18,25 @@ FROM pays p
 JOIN stats_journalieres sj ON p.iso = sj.iso_pays 
 JOIN vaccinnations_stats vs ON vs.id=sj.id 
 GROUP BY p.nom, p.iso) maxi)
----Requete 3-----
-SELECT distinct p.nom, cv.nom_vaccin
+
+---Requete 3----- 
+
+SELECT distinct cv.nom_vaccin, p.nom
 FROM pays p JOIN campagne_vaccin cv ON p.iso=cv.iso_pays 
 GROUP BY cv.nom_vaccin,p.nom
+order by cv.nom_vaccin
 
----Requete 4---- NON FONCTIONNEL 
-SELECT cast((( cast(hs.hosp_patiens as float)/ p.population )*100) as numeric(36,2)), p.nom
+---Requete 4---- 
+SELECT p.iso, p.nom, cast((( cast(hs.hosp_patiens as float)/ p.population )*100) as numeric(36,2)) 
 FROM hospitalisations_stats hs JOIN stats_journalieres sj ON sj.id = hs.id JOIN pays p ON p.iso= sj.iso_pays
 WHERE sj.date = '01/01/2021'
-Group by p.population, hs.hosp_patiens, p.nom
+Group by p.iso, p.population, hs.hosp_patiens, p.nom
 
 ---Requete 5----
-SELECT sj.date, hs.hosp_patiens - LEAD(hs.hosp_patiens) OVER (ORDER BY sj.date) NextValue 
-FROM hospitalisations_stats hs JOIN stats_journalieres sj on sj.id = hs.id
-
+SELECT p.iso, p.nom, sj.date, hs.hosp_patiens - LEAD(hs.hosp_patiens) OVER (ORDER BY sj.date) NextValue 
+FROM hospitalisations_stats hs JOIN stats_journalieres sj on sj.id = hs.id join pays p on p.iso = sj.iso_pays
+Group by p.iso, p.nom, sj.date,  hs.hosp_patiens
+order by p.iso, sj.date
 ---Requete 6---
 SELECT cv.nom_vaccin 
 FROM campagne_vaccin cv 
@@ -40,3 +45,7 @@ INTERSECT
 SELECT cv.nom_vaccin
 FROM campagne_vaccin cv 
 WHERE iso_pays = 'FRA'
+
+
+select p.iso, sj.date,  hs.hosp_patiens
+from stats_journalieres sj join hospitalisations_stats hs on sj.id = hs.id join pays p on sj.iso_pays = p.iso
