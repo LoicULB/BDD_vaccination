@@ -12,6 +12,11 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import Error, IntegrityError
+from .forms import CreateUserForm
+from django.views.generic.edit import FormView
+import uuid
+
+
 
 # Create your views here.
 
@@ -34,15 +39,69 @@ def is_user_epidemiologist(user):
             
             row = cursor.fetchone()
     return row is not None
-def execute_sql(sql):
+def is_user_id_epidemiologist(user_id):
+    with connection.cursor() as cursor:
+            cursor.execute("""SELECT e.uuid 
+                            FROM utilisateur u join epidemiologiste e ON u.uuid=e.uuid
+                            WHERE u.id=%s""", [user_id])
+            
+            row = cursor.fetchone()
+    return row is not None
+def execute_sql(sql, param=None):
     response = {}
     with connection.cursor() as cursor:
-        cursor.execute(sql)
+        cursor.execute(sql, param)
             
         row = cursor.fetchall()
-        response["result"]  = list((row))
+        response["result"]  = row
         response["columns"] = dictGetColumn(cursor) 
     return response
+def execute_sql_one(sql, param=None):
+    response = {}
+    with connection.cursor() as cursor:
+        cursor.execute(sql, param)
+            
+        row = cursor.fetchone()
+        response["result"]  = row
+        response["columns"] = dictGetColumn(cursor) 
+    return response
+def create_user_dict(data_form):
+    user_dict = {}
+    print("Les keys")
+    for key in data_form.keys():
+        if data_form[key] and key != 'csrfmiddlewaretoken':
+            user_dict[key]= data_form[key]
+            print(data_form[key])
+    if not data_form['uuid']:
+        user_dict["uuid"] = uuid.uuid4()
+    return user_dict
+def create_user(form):
+    user_dict = create_user_dict(form.data)
+    query_columns = ""
+    index_key=1
+    for key in user_dict.keys():
+
+        query_columns += key
+        if(index_key<len(user_dict.keys())):
+            query_columns+=","
+        index_key+=1   
+    query_values = ""
+    index_key=1
+    for value in user_dict.values():
+
+        query_values += f"$${value}$$"
+        if index_key<len(user_dict):
+            query_values+=","
+        index_key+=1   
+    
+    print( query_columns)
+    print(query_values)
+    query = f"INSERT INTO utilisateur({query_columns}) VALUES ({query_values}) RETURNING id;"
+    print(query)
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        row = cursor.fetchone()
+        return row[0]
 class QueryView(LoginRequiredMixin,TemplateView):
     query = None
     query_context_name = None
@@ -141,4 +200,34 @@ def handle_form_prepared_query(request):
 class Sql_query(TemplateView):
     template_name= "country/requete_sql.html"
 
+class UserProfile(TemplateView):
+    template_name= "country/user_profile.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print("Le param est : " +str(kwargs["id"]))
+        response_sql = execute_sql_one("SELECT u.id, u.uuid, u.nom, u.prenom, u.pseudo, u.rue_adresse, u.code_postal_adresse, u.numero_adresse, u.ville_adresse, e.centre, e.telephone_service FROM utilisateur u LEFT JOIN epidemiologiste e ON u.uuid=e.uuid  WHERE id=%s", [kwargs["id"]])
+        print("La réponse est = " +str(response_sql["result"]))
+        print("Les colonnes sont : " +str(response_sql["columns"]))
+        user_data = {}
+        for key in range(len(response_sql["columns"])):
+            user_data[response_sql["columns"][key]]=response_sql["result"][key]
+             
+        user_data["is_epidemiologist"] = is_user_id_epidemiologist(kwargs["id"] )
+        print(user_data)
+        context["user"] = user_data
+        
+           
+        return context
+class CreateUserFormView(FormView):
+    template_name = 'country/create_user.html'
+    form_class = CreateUserForm
+    success_url = '/thanks/'
 
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        print("Form is : ")
+        print(form.data)
+        id_user = create_user(form)
+        self.success_url = reverse('country:user-profile',  kwargs={'id':id_user})
+        return super().form_valid(form)
