@@ -64,8 +64,8 @@ class CreateUserForm(forms.Form):
     ville_adresse = forms.CharField(label="Ville", max_length=40, required=False)
 
     
-    def clean_password(self):
-        data = self.cleaned_data['password']
+    def clean_mot_de_passe(self):
+        data = self.cleaned_data['mot_de_passe']
         error = get_string_pswd_error(data)
         if error:
             raise ValidationError(error)
@@ -76,3 +76,27 @@ class CreateUserForm(forms.Form):
         if username_already_used(data):
             raise ValidationError("HOLY SHIEEEET!!! Le nom d'utilisateur est déjà pris!")
         return data
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        array = []
+        rue_adresse = cleaned_data.get("rue_adresse")
+        numero_adresse = cleaned_data.get("numero_adresse")
+        code_postal_adresse = cleaned_data.get("code_postal_adresse")
+        ville_adresse = cleaned_data.get("ville_adresse")
+        if rue_adresse:
+            array.append(rue_adresse)
+        if numero_adresse:
+            array.append(numero_adresse)
+        if code_postal_adresse:
+            array.append(code_postal_adresse)
+        if ville_adresse:
+            array.append(ville_adresse)
+
+        if len(array) > 0 and len(array) <4:
+            
+            raise ValidationError("Si un champs adresse est rempli, ils doivent tous l'être")
+class CreateEpidemiologistForm(CreateUserForm):
+    centre = forms.CharField(label="Centre", max_length=40, required=True)
+    telephone_service = forms.CharField(label="Telephone service", max_length=40, required=True)
+

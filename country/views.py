@@ -12,10 +12,10 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.db import Error, IntegrityError
-from .forms import CreateUserForm
+from .forms import CreateUserForm, CreateEpidemiologistForm
 from django.views.generic.edit import FormView
 import uuid
-
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 # Create your views here.
@@ -70,10 +70,12 @@ def create_user_dict(data_form):
     print("Les keys")
     for key in data_form.keys():
         if data_form[key] and key != 'csrfmiddlewaretoken':
+            
             user_dict[key]= data_form[key]
             print(data_form[key])
     if not data_form['uuid']:
         user_dict["uuid"] = uuid.uuid4()
+    user_dict["mot_de_passe"] = make_password(user_dict["mot_de_passe"])
     return user_dict
 def create_user(form):
     user_dict = create_user_dict(form.data)
@@ -231,3 +233,78 @@ class CreateUserFormView(FormView):
         id_user = create_user(form)
         self.success_url = reverse('country:user-profile',  kwargs={'id':id_user})
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["model"] = "utilisateur"
+        return context
+def create_epidemiologist_dict(user_dict):
+    epi_dict= {}
+    epi_dict["uuid"] = user_dict["uuid"]
+    user_dict.pop('uuid', None)
+    epi_dict["centre"] = user_dict["centre"]
+    user_dict.pop('centre', None)
+    epi_dict["telephone_service"] = user_dict["telephone_service"]
+    user_dict.pop('telephone_service', None)
+    return epi_dict
+
+def get_update_user_query(user_dict, uuid):
+    query_columns = ""
+    index_key=1
+    for key in user_dict.keys():
+
+        query_columns += f"{key}=$${user_dict[key]}$$" 
+        if(index_key<len(user_dict.keys())):
+            query_columns+=","
+        index_key+=1   
+   
+    return f"UPDATE utilisateur SET {query_columns} WHERE uuid=$${uuid}$$ RETURNING id;"
+    
+    
+def insert_epidemiologist(user_dict, epi_dict):
+    insert_epi_values = ""
+    index_key=1
+    for value in epi_dict.values():
+        insert_epi_values += f"$${value}$$"
+        if index_key<len(epi_dict):
+            insert_epi_values+=","
+        index_key+=1
+    insert_epi_query = f"INSERT INTO epidemiologiste VALUES ({insert_epi_values}) ;"   
+    with connection.cursor() as cursor:
+        cursor.execute(insert_epi_query)
+      
+
+    print(insert_epi_query)
+
+    update_query = get_update_user_query(user_dict, epi_dict["uuid"])
+    with connection.cursor() as cursor:
+        cursor.execute(update_query)
+        row = cursor.fetchone()
+        return row[0]
+def email_check(user):
+    return is_user_epidemiologist(user)
+
+
+class CreateEpidemiologistFormView(UserPassesTestMixin,FormView ):
+    template_name = 'country/create_user.html'
+    form_class = CreateEpidemiologistForm
+    success_url = '/thanks/'
+
+    def test_func(self):
+        print("t'es un epi?")
+        return is_user_epidemiologist(self.request.user)
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        print("Form is : ")
+        print(form.data)
+        user_dict = create_user_dict(form.data)
+        epi_dict = create_epidemiologist_dict(user_dict)
+        id_user = insert_epidemiologist(user_dict, epi_dict)
+        #id_user = create_user(form)
+        self.success_url = reverse('country:user-profile',  kwargs={'id':id_user})
+        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["model"] = "epidémiologiste"
+        return context

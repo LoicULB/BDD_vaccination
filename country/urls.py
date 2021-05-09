@@ -8,6 +8,8 @@ urlpatterns = [
     path('requete_sql', views.Sql_query.as_view() , name="requete-sql"),
     path('writed_query_validation/', views.writed_query_form_validation, name='writed_query_validation'),
     path('create_user', views.CreateUserFormView.as_view(), name="create-user"),
+    path('create_epidemiologist', views.CreateEpidemiologistFormView.as_view(), name="create-epidemiologist"),
     path('user_profile/<int:id>', views.UserProfile.as_view(), name="user-profile"),
+    
    
 ]
