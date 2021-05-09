@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Création {{model}} {% endblock title %}
+{% block content %}
+
+    <div class="container-sm p-3 mt-2 bg-light text-primary">
+        <h2>Créer un nouvel {{model}}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-dark">Envoyer</button>
+        </form>
+    </div>
+{% endblock content %}

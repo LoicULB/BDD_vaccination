@@ -4,19 +4,21 @@
 
 {% block content %}
 
-<form class =" container shadow-textarea py-3 px-3 my-3 z-depth-1 "action="{% url "country:receive-form-prepared-query" %}" method="get">
+<form id="form" class =" container shadow-textarea py-3 px-3 my-3 z-depth-1 " {% comment %} action="{% url "country:receive-form-prepared-query" %}"{% endcomment %} method="post">
 
 
   <!-- Message input -->
   <div class="md-form mb-4 ">
-    <textarea class="form-control md-textarea {%if errors%}is-invalid {%endif%}"  id="SQL" name="query"
-          rows="10" cols="50"
+    <textarea class="form-control md-textarea {%if errors%}is-invalid {%elif success%} is-valid{%endif%}"  id="SQL" name="query"
+          rows="7" cols="50"
          ></textarea>
     <label for="SQL">Ma requête SQL</label>
-       <div class="invalid-feedback">
+       <div id="invalid-feedback" class="invalid-feedback">
             {{errors}}
       </div>
-      
+      <div id="valid-feedback" class="valid-feedback">
+            {{success}}
+      </div>
 
   </div>
  
@@ -30,6 +32,58 @@
 
 </form>
 
+<div id="output">
 
+</div>
 
 {% endblock content %}
+
+{% block script %}
+
+
+
+<script>
+$('#form').on('submit', function(e){
+
+e.preventDefault();
+
+  $.ajax({
+       type : "POST", 
+       url: "{% url 'country:writed_query_validation' %}",
+       data: {
+        query : $('#SQL').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        dataType: "json",
+
+       },
+       
+       success: function(data){
+            if(data.type=="select")
+               window.location = data.url;
+            else{
+               $('#SQL').removeClass("is-invalid")
+               $('#SQL').addClass("is-valid")
+               $("#valid-feedback").text(data.msg)
+            }
+         
+       },
+
+       failure: function(data) {
+           $('#SQL').addClass("is-invalid")
+            $("#invalid-feedback").text(data.msg)
+       },
+       error: function (error) {
+          console.log(error.responseText);
+           $('#SQL').addClass("is-invalid")
+           $("#invalid-feedback").text(error.responseText)  
+          
+            
+       }
+
+
+   });
+
+
+        }); 
+        </script>
+{% endblock%}

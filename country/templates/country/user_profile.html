@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{%load static%}
+{% block content %}
+<div class="row ">
+  <div class="mx-auto my-4" style="width:40%">
+        <div class="text-center px-4 container shadow-textarea py-3 px-4 my-3 z-depth-1">
+              
+            <img src="{{user.profile_picture.url}}" class="img-fluid z-depth-1 rounded-circle my-2 mb-3" style="width:15%"></img>
+            <p>{{user.pseudo}} {%if user.is_epidemiologist%} <i class="fas fa-certificate" style="color:green"></i> {%endif%} </p> 
+            <p>{{user.nom}} {{user.prenom}}</p>
+            <div class="text-left mx-auto " style="width:35%">
+               {% if user.rue_adresse %} <p><i class="fas fa-city"></i>  {{ user.rue_adresse}} {{ user.numero_adresse}} {{user.ville_adresse}} {{user.code_postal_adresse}}</p> {%endif%}
+               {% if user.centre %} <p><i class="far fa-hospital"></i> {{user.centre}}</p> {%endif%}
+               {% if user.telephone_service %} <p><i class="fas fa-phone"></i> {{user.telephone_service}}</p> {%endif%}
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock %}

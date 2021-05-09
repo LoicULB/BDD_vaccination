@@ -18,8 +18,9 @@ CREATE TABLE Pays (
 	Region varchar(50) CONSTRAINT region_fk REFERENCES Region(nom),
 	Nom varchar(50) UNIQUE,
 	hdi float,
-	Surface BIGINT,
 	Population BIGINT,
+	Surface BIGINT,
+	
 	climat INT CONSTRAINT climat_fk REFERENCES Climat(id),
 	debut_vaccination DATE 
 	
@@ -46,7 +47,7 @@ CREATE TABLE Utilisateur (
 	Nom varchar(40),
 	Prenom varchar(40),
 	pseudo varchar(40)  , --should be not null
-	mot_de_passe varchar(40)  , --should be not null
+	mot_de_passe varchar(100)  , --should be not null
 	rue_Adresse varchar(100),
 	code_postal_adresse INT,
 	numero_adresse INT,

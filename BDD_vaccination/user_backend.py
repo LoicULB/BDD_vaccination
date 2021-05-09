@@ -2,6 +2,7 @@ from django.contrib.auth.backends import BaseBackend
 from django.db import connection
 from django.contrib.auth.models import User
 import uuid
+from django.contrib.auth.hashers import make_password, check_password
 
 def is_valid_uuid(val):
     try:
@@ -16,7 +17,7 @@ class MyBackend(BaseBackend):
                 cursor.execute("SELECT mot_de_passe FROM Utilisateur WHERE uuid=%s", [username])
             
                 row = cursor.fetchone()
-                if (password == row[0]):
+                if (check_password(password, row[0])):
                    
                     return User(id=username)
         else :
@@ -24,7 +25,7 @@ class MyBackend(BaseBackend):
                 cursor1.execute("SELECT id, mot_de_passe FROM Utilisateur WHERE pseudo=%s", [username])
             
                 row2 = cursor1.fetchone()
-                if (password == row2[1]):
+                if (check_password(password, row2[1])):
                     try:
                         user = User.objects.get(id=row2[0])
                     except User.DoesNotExist:

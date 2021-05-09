@@ -1,6 +1,6 @@
 {% extends "country/_base.html" %}
 {% load static %}
-{% block title%} Liste des pays{% endblock %}
+{% block title%} Résultat requête SQL {% endblock %}
 
 
 {% block content %}
@@ -8,7 +8,7 @@
   
 
 
-{%include 'country/select_result_modal.html' with results=countrys %}
+{%include 'country/select_result_modal.html' with results=results %}
 
 {% endblock content %}
 {% block script %}
