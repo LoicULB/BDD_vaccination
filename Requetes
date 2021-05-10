@@ -7,36 +7,41 @@ WHERE hs.hosp_patiens >= 5000
 
 ---Requete 2 ---- 
 
-select maxi.iso, maxi.nom, maxi.sum
-from (SELECT distinct p.nom ,SUM(vs.vaccinations), p.iso
-FROM pays p 
-JOIN stats_journalieres sj ON p.iso = sj.iso_pays 
-JOIN vaccinnations_stats vs ON vs.id=sj.id 
-GROUP BY p.nom, p.iso) maxi
-where maxi.sum = (SELECT MAX(maxi.sum) from (SELECT distinct p.nom ,SUM(vs.vaccinations), p.iso
-FROM pays p 
-JOIN stats_journalieres sj ON p.iso = sj.iso_pays 
-JOIN vaccinnations_stats vs ON vs.id=sj.id 
-GROUP BY p.nom, p.iso) maxi)
+WITH sum_vacc_for_each_pays(iso,nom, somme ) AS (
+	SELECT distinct p.iso, p.nom ,SUM(vs.vaccinations)
+	FROM pays p 
+	JOIN stats_journalieres sj ON p.iso = sj.iso_pays 
+	JOIN vaccinnations_stats vs ON vs.id=sj.id 
+	GROUP BY p.nom, p.iso
+)
+select iso,nom, somme
+from sum_vacc_for_each_pays maxi
+WHERE somme is not null
+ORDER BY somme DESC limit 1
+
 
 ---Requete 3----- 
 
-SELECT distinct cv.nom_vaccin, p.nom
+SELECT distinct cv.nom_vaccin, p.iso, p.nom
 FROM pays p JOIN campagne_vaccin cv ON p.iso=cv.iso_pays 
-GROUP BY cv.nom_vaccin,p.nom
-order by cv.nom_vaccin
+GROUP BY cv.nom_vaccin, p.iso, p.nom
+order by cv.nom_vaccin --should use p.iso cause some countries without name
 
 ---Requete 4---- 
-SELECT p.iso, p.nom, cast((( cast(hs.hosp_patiens as float)/ p.population )*100) as numeric(36,2)) 
+SELECT p.iso, p.nom, (( hs.hosp_patiens::float/ p.population )*100)::numeric(36,2) as pourcentage
 FROM hospitalisations_stats hs JOIN stats_journalieres sj ON sj.id = hs.id JOIN pays p ON p.iso= sj.iso_pays
 WHERE sj.date = '01/01/2021'
 Group by p.iso, p.population, hs.hosp_patiens, p.nom
+--only show country where ther is a stat
 
 ---Requete 5----
-SELECT p.iso, p.nom, sj.date, hs.hosp_patiens - LEAD(hs.hosp_patiens) OVER (ORDER BY sj.date) NextValue 
+
+--return null where there is no previous date to compare 
+SELECT p.iso, p.nom, sj.date, hs.hosp_patiens - LAG(hs.hosp_patiens)OVER (PARTITION BY p.iso ORDER BY sj.date) evolution
 FROM hospitalisations_stats hs JOIN stats_journalieres sj on sj.id = hs.id join pays p on p.iso = sj.iso_pays
 Group by p.iso, p.nom, sj.date,  hs.hosp_patiens
 order by p.iso, sj.date
+
 ---Requete 6---
 SELECT cv.nom_vaccin 
 FROM campagne_vaccin cv 
