@@ -1,6 +1,7 @@
 from django import forms
 from django.db import connection
 from django.core.exceptions import ValidationError
+import uuid
 def username_already_used(username):
     print("Le nom que je veux est / " +username)
     with connection.cursor() as cursor:
@@ -63,7 +64,17 @@ class CreateUserForm(forms.Form):
     code_postal_adresse = forms.IntegerField(label="Code postal", required=False)
     ville_adresse = forms.CharField(label="Ville", max_length=40, required=False)
 
-    
+    def clean_uuid(self):
+        data = self.cleaned_data['uuid']
+        try:
+            val = uuid.UUID(data, version=4)
+        except ValueError:
+            # If it's a value error, then the string 
+            # is not a valid hex code for a UUID.
+            raise ValidationError("L'uuid n'est pas un uuid conforme à la version 4")
+
+        return data
+        
     def clean_mot_de_passe(self):
         data = self.cleaned_data['mot_de_passe']
         error = get_string_pswd_error(data)

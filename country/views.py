@@ -160,9 +160,14 @@ def writed_query_form_validation(request):
                 except Error as e:
                         
                     return HttpResponse(str(e), status=500)
-                
-                
-                
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+        except Error as e:
+                        
+            return HttpResponse(str(e), status=500)
+        
+        #l'erreur est ici
         response = {
             'type' : get_sql_type(query),   
             'msg': "success", # response message
@@ -199,7 +204,7 @@ def handle_form_prepared_query(request):
         
     return render(request, 'country/select_results.html', {'results': response_sql["result"] , 'columns' : response_sql["columns"] })
     
-class Sql_query(TemplateView):
+class Sql_query(LoginRequiredMixin,TemplateView ):
     template_name= "country/requete_sql.html"
 
 class UserProfile(TemplateView):

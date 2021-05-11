@@ -46,7 +46,7 @@ CREATE TABLE Utilisateur (
 	uuid uuid NOT NULL UNIQUE,
 	Nom varchar(40),
 	Prenom varchar(40),
-	pseudo varchar(40)  , --should be not null
+	pseudo varchar(40) UNIQUE , --should be not null
 	mot_de_passe varchar(100)  , --should be not null
 	rue_Adresse varchar(100),
 	code_postal_adresse INT,
