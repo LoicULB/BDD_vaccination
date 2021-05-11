@@ -52,6 +52,7 @@ CREATE TABLE Utilisateur (
 	code_postal_adresse INT,
 	numero_adresse INT,
 	ville_adresse varchar(40)
+	--rajouter contrainte d'intégrité sur chaque colonne adresse
 );
 
 CREATE TABLE Epidemiologiste (
