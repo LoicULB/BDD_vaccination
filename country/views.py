@@ -129,7 +129,7 @@ class CountryListView(QueryView):
     query_context_name= "countrys"
 
 
-class FormPreparedQuery(TemplateView, LoginRequiredMixin):
+class FormPreparedQuery(LoginRequiredMixin, TemplateView):
     template_name= "country/form_prepared_query.html"
 
 @login_required
@@ -183,13 +183,10 @@ def handle_form_prepared_query(request):
     error= None
     
     if (not is_dsl(query)):
-        print("C'est pas du DSL")
         if( not is_user_epidemiologist(request.user)):
-            print("MDR t'es pas un epi mon coco lapin")
             error = "MDR faut être un épidemiologiste pour pouvoir faire du DDL mon coco"
             return render(request, 'country/requete_sql.html', {'errors' : error })
         else :
-            print("Tu es un épi mon coco")
 
             with connection.cursor() as cursor:
                 cursor.execute(query)
@@ -231,10 +228,7 @@ class CreateUserFormView(FormView):
     success_url = '/thanks/'
 
     def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        print("Form is : ")
-        print(form.data)
+
         id_user = create_user(form)
         self.success_url = reverse('country:user-profile',  kwargs={'id':id_user})
         return super().form_valid(form)
@@ -279,8 +273,6 @@ def insert_epidemiologist(user_dict, epi_dict):
         cursor.execute(insert_epi_query)
       
 
-    print(insert_epi_query)
-
     update_query = get_update_user_query(user_dict, epi_dict["uuid"])
     with connection.cursor() as cursor:
         cursor.execute(update_query)
@@ -295,18 +287,14 @@ class CreateEpidemiologistFormView(UserPassesTestMixin,FormView ):
     form_class = CreateEpidemiologistForm
     success_url = '/thanks/'
 
-    def test_func(self):
-        print("t'es un epi?")
-        return is_user_epidemiologist(self.request.user)
+    
     def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        print("Form is : ")
-        print(form.data)
+        
+       
         user_dict = create_user_dict(form.data)
         epi_dict = create_epidemiologist_dict(user_dict)
         id_user = insert_epidemiologist(user_dict, epi_dict)
-        #id_user = create_user(form)
+      
         self.success_url = reverse('country:user-profile',  kwargs={'id':id_user})
         return super().form_valid(form)
     def get_context_data(self, **kwargs):

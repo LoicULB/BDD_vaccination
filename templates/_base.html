@@ -60,8 +60,9 @@
       </a>
       <div class="dropdown-menu dropdown-menu-right dropdown-default "
           aria-labelledby="navbarDropdownMenuLink-333">
-        <a class="dropdown-item" href={% url 'logout' %}>Disconnect</a>
-        <a class="dropdown-item" href="#">Change paswd</a>
+        <a class="dropdown-item" href={% url 'country:user-profile' id=request.user.id %}>Mon profil</a>
+        <a class="dropdown-item" href={% url 'logout' %}>Déconnexion</a>
+
       </div>
     </div>
 </nav>
