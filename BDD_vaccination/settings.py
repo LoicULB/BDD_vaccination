@@ -90,8 +90,8 @@ DATABASES = {
     #}
     'default': {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-        'NAME' : 'Vaccination_BDD',
-        'USER': 'Group_C_BDD',
+        'NAME' : 'vaccination_bdd',
+        'USER': 'dav',
         'PASSWORD' : 'PullMyDevilTrigger',
         'HOST': 'localhost',
         'PORT' : "",

@@ -153,7 +153,7 @@ def clean_hospitals_vaccinations_fileV2(vaccinations_csv_path, hospitals_csv_pat
             daily_stats_index+=1
             daily_stats_result["id_stat"] = daily_stats_index
             daily_stats_result["pays"] = row["iso_code"]
-            daily_stats_result["date"] = convert_ugly_date_to_pretty_date(row["date"])
+            daily_stats_result["date"] = row["date"]
             daily_stats_result["epidemiologist"] = row["source_epidemiologiste"]
 
             if not row["source_epidemiologiste"] in epidemiologists_list:
@@ -230,7 +230,7 @@ def convert_ugly_date_to_pretty_date(ugly_date_string):
     dto = parser.parse(ugly_date_string)
     return dto.strftime("%d/%m/%Y")
 
-    
+
 create_countries_tables("country.csv")
 clean_producers_file("producers.csv")
 clean_hospitals_vaccinations_fileV2('vaccinations.csv', 'hospitals.csv')

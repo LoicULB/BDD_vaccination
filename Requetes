@@ -1,7 +1,7 @@
 ----Requete 1 -----
 
 
-SELECT distinct p.nom 
+SELECT distinct p.iso, p.nom 
 FROM pays p JOIN stats_journalieres sj ON p.iso=sj.iso_pays JOIN hospitalisations_stats hs ON hs.id=sj.id
 WHERE hs.hosp_patiens >= 5000
 

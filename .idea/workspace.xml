@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6543c04b-cba4-45c4-b281-f11ad81a868f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/BDD_vaccination/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/BDD_vaccination/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Requetes" beforeDir="false" afterPath="$PROJECT_DIR$/Requetes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CSVToTable.py" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CSVToTable.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CSVtoSQL/fullfill_country.sql" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CSVtoSQL/fullfill_country.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CSVtoSQL/fullfill_sj.sql" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CSVtoSQL/fullfill_sj.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CSVtoSQL/fullfill_vs.sql" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CSVtoSQL/fullfill_vs.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/campaign_vaccines_cleaned.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/campaign_vaccines_cleaned.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_daily_stats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_daily_stats.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_epidemiologists.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_epidemiologists.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_hospitalisation_stats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_hospitalisation_stats.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_vaccinations_stats.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/cleaned_vaccinations_stats.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/continent_cleaned.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/continent_cleaned.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/country_cleaned.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/country_cleaned.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/region_cleaned.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/region_cleaned.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/ressources/CleanedCSV/vaccines_cleaned.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/ressources/CleanedCSV/vaccines_cleaned.csv" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1qnQs5btYz5iAXzNwXSU8WMv1pk" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/static/ressources/CSVtoSQL" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/static/ressources/CSVtoSQL" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="BDD_vaccination" type="Python.DjangoServer" factoryName="Django server">
+      <module name="BDD_vaccination" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6543c04b-cba4-45c4-b281-f11ad81a868f" name="Default Changelist" comment="" />
+      <created>1617713079663</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1617713079663</updated>
+      <workItem from="1617713086211" duration="333000" />
+      <workItem from="1620224942471" duration="856000" />
+      <workItem from="1620225857438" duration="422000" />
+      <workItem from="1620398890322" duration="1654000" />
+      <workItem from="1620400821181" duration="1049000" />
+      <workItem from="1620743400848" duration="2468000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="daily_stats_result[&quot;date&quot;] == '27/02/2020'" language="Python" />
+          <url>file://$PROJECT_DIR$/static/ressources/CSVToTable.py</url>
+          <line>146</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
