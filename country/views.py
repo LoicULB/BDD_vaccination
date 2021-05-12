@@ -28,8 +28,8 @@ def get_sql_type(query):
     splited_query=query.split(" ")
     return splited_query[0].lower()
 def is_dsl(query):
-    
-    return get_sql_type(query) == "select"
+    th_type = get_sql_type(query)
+    return th_type == "select" or th_type =="with"
 
 def is_user_epidemiologist(user):
     with connection.cursor() as cursor:
@@ -287,7 +287,9 @@ class CreateEpidemiologistFormView(UserPassesTestMixin,FormView ):
     form_class = CreateEpidemiologistForm
     success_url = '/thanks/'
 
-    
+    def test_func(self):
+        print("t'es un epi?")
+        return is_user_epidemiologist(self.request.user)
     def form_valid(self, form):
         
        

@@ -142,7 +142,7 @@ BEGIN
 	raise notice 'Date Start Campaign :  %s', date_vs;
 
 	IF(NEW.vaccinations is NOT NULL AND date_vs < date_start_campaign) THEN
-		RAISE EXCEPTION 'La date de la stat journalière doit être postérieure à la date de début de vaccination du pays concerné';
+		RAISE EXCEPTION 'La date de la stat journaliere doit etre posterieure à la date de debut de vaccination du pays concerne';
 	END IF;
 	RETURN NEW;
 END; $$;
@@ -160,4 +160,11 @@ EXECUTE PROCEDURE stats_journalieres_date_after_start_campaign();
 --FROM stats_journalieres sj JOIN pays p ON p.iso=sj.iso_pays
 --WHERE debut_vaccination < date
 
---UPDATE vaccinnations_stats SET vaccinations=1000 WHERE id=286
+--UPDATE vaccinnations_stats SET vaccinations=1000 WHERE id=6279
+
+--
+--SELECT sj.id 
+--FROM stats_journalieres sj NATURAL JOIN vaccinnations_stats JOIN pays p ON p.iso=sj.iso_pays
+--WHERE debut_vaccination > date
+--
+--
