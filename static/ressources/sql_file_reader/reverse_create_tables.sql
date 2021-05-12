@@ -1,4 +1,5 @@
 DROP TRIGGER auto_insert_user ON epidemiologiste;
+DROP TRIGGER IF EXISTS stats_journalieres_date_after_start_campaign  ON vaccinnations_stats;
 DROP TABLE IF EXISTS hospitalisations_stats;
 DROP TABLE vaccinnations_stats;
 DROP TABLE stats_journalieres;

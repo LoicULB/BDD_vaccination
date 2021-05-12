@@ -52,7 +52,10 @@ CREATE TABLE Utilisateur (
 	code_postal_adresse INT,
 	numero_adresse INT,
 	ville_adresse varchar(40)
+	CONSTRAINT adresse_integrity_constraint CHECK (((rue_adresse is NULL)::int + (rue_adresse is NULL)::int +(code_postal_adresse is NULL)::int + (numero_adresse is NULL)::int )in (0,4))
 	--rajouter contrainte d'intégrité sur chaque colonne adresse
+	
+	--ALTER TABLE utilisateur ADD CONSTRAINT adresse_integrity_constraint CHECK (((rue_adresse is NULL)::int + (rue_adresse is NULL)::int +(code_postal_adresse is NULL)::int + (numero_adresse is NULL)::int )in (0,4))
 );
 
 CREATE TABLE Epidemiologiste (
@@ -82,6 +85,7 @@ CREATE TABLE hospitalisations_stats (
 	id INT NOT NULL CONSTRAINT idvaccination_fk REFERENCES Stats_Journalieres(id),
 	Icu_patiens BIGINT,
 	hosp_patiens BIGINT,
+	CONSTRAINT patients_integrity CHECK (((icu_patiens is NOT NULL)::int + (hosp_patiens is NOT NULL)::int) IN (0,2)),
 	CONSTRAINT icu_hosp CHECK (Icu_patiens <= hosp_patiens),
 	CONSTRAINT hospitalisations_pk PRIMARY KEY(id)
 );
@@ -113,4 +117,47 @@ CREATE TRIGGER auto_insert_user BEFORE INSERT ON epidemiologiste FOR EACH ROW
 EXECUTE PROCEDURE auto_insert_user();
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-INSERT INTO utilisateur(uuid, pseudo, mot_de_passe) VALUES (uuid_generate_v4(), 'Harry', $$Caput Draconis$$)
+INSERT INTO utilisateur(uuid, pseudo, mot_de_passe) VALUES (uuid_generate_v4(), 'Harry', $$Caput Draconis$$);
+
+
+
+----
+CREATE OR REPLACE FUNCTION stats_journalieres_date_after_start_campaign() RETURNS TRIGGER 
+LANGUAGE PLPGSQL AS $$
+DECLARE
+   date_vs stats_journalieres.date%type;
+   date_start_campaign pays.debut_vaccination%type;
+BEGIN
+	SELECT date
+	FROM stats_journalieres s
+	INTO date_vs
+	WHERE s.id=NEW.id;
+	raise notice 'Date VS :  %s', date_vs;
+
+	SELECT debut_vaccination
+	FROM pays p 
+	JOIN stats_journalieres s ON p.iso=s.iso_pays
+	INTO date_start_campaign
+	WHERE s.id=NEW.id;
+	raise notice 'Date Start Campaign :  %s', date_vs;
+
+	IF(NEW.vaccinations is NOT NULL AND date_vs < date_start_campaign) THEN
+		RAISE EXCEPTION 'La date de la stat journalière doit être postérieure à la date de début de vaccination du pays concerné';
+	END IF;
+	RETURN NEW;
+END; $$;
+-----
+CREATE TRIGGER stats_journalieres_date_after_start_campaign 
+BEFORE INSERT OR UPDATE OF vaccinations ON vaccinnations_stats FOR EACH ROW 
+EXECUTE PROCEDURE stats_journalieres_date_after_start_campaign();
+------
+--we could add check on pays and stats_journalieres on update or insert of date but it would be long
+-----
+
+--INSERT INTO vaccinnations_stats(id, vaccinations) VALUES (1, 1000)
+
+--SELECT sj.id 
+--FROM stats_journalieres sj JOIN pays p ON p.iso=sj.iso_pays
+--WHERE debut_vaccination < date
+
+--UPDATE vaccinnations_stats SET vaccinations=1000 WHERE id=286

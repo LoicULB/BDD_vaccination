@@ -10,3 +10,5 @@ end $$;
 UPDATE utilisateur SET rue_adresse='Rue Infection', code_postal_adresse='1040', numero_adresse='108', ville_adresse='Ghost City' WHERE pseudo='Sacha';
 UPDATE utilisateur SET rue_adresse='Rue Perlimpinpin', code_postal_adresse='1050', numero_adresse='120', ville_adresse='Harem City' WHERE pseudo='Mexico';
 UPDATE epidemiologiste SET centre='Pokemon' , telephone_service=$$0471/78/12/17$$ WHERE uuid =(SELECT uuid FROM utilisateur WHERE pseudo='Sacha');
+
+--for test integrity INSERT INTO utilisateur(uuid, pseudo, mot_de_passe, numero_adresse, ville_adresse, code_postal_adresse, rue_adresse) VALUES (uuid_generate_v4(), 'Tot', 'testo', 123, 'Jambono', 1040, 'Ghost city'); --mdp Sombrero
