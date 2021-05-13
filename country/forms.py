@@ -66,12 +66,13 @@ class CreateUserForm(forms.Form):
 
     def clean_uuid(self):
         data = self.cleaned_data['uuid']
-        try:
-            val = uuid.UUID(data, version=4)
-        except ValueError:
-            # If it's a value error, then the string 
-            # is not a valid hex code for a UUID.
-            raise ValidationError("L'uuid n'est pas un uuid conforme à la version 4")
+        if (data):
+            try:
+                val = uuid.UUID(data, version=4)
+            except ValueError:
+                # If it's a value error, then the string 
+                # is not a valid hex code for a UUID.
+                raise ValidationError("L'uuid n'est pas un uuid conforme à la version 4")
 
         return data
         
